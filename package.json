@@ -9,12 +9,6 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "nodemon": "^1.18.5"
-  },
   "dependencies": {
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
@@ -25,6 +19,10 @@
     "limax": "^1.7.0",
     "mongoose": "^5.3.6",
     "sanitize-html": "^1.19.1",
-    "validator": "^10.8.0"
+    "validator": "^10.8.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "nodemon": "^1.18.5"
   }
 }
