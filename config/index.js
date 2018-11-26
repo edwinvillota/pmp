@@ -1,5 +1,5 @@
 export default {
   'port': 3000,
-  'mongoUrl': 'mongodb://localhost:27017/webproject',
+  'mongoUrl': process.env.MONGOLAB_URI,
   'bodyLimit': '100Kb'
 }
