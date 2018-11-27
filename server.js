@@ -22,7 +22,9 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: false
 }))
-app.use('/', users)
+app.use('/', (req, res) => {
+  res.send('ok')
+})
 // Routes
 app.use('/api', Auth.verifyAuth)
 // app.use('/api', Auth.requireAuth)

@@ -2,10 +2,6 @@ import { Router } from 'express'
 import UserController from '../controllers/user.controller'
 const router = new Router()
 
-router.get('/', (req, res) => {
-  res.send('API')
-})
-
 router.get('/users', (req, res) => {
   UserController.getAll(req, res)
 })
