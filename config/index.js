@@ -1,5 +1,5 @@
 export default {
-  'port': 3000,
+  'port': process.env.PORT,
   'mongoUrl': process.env.MONGOLAB_URI,
   'bodyLimit': '100Kb'
 }
