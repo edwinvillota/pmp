@@ -31,7 +31,6 @@ app.use('/api', projects)
 app.use('/api', users)
 app.use('/api', appointments)
 app.use('/api', dbcsv)
-
 app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`)
 })
