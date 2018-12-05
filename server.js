@@ -2,6 +2,8 @@ import express from 'express'
 import bodyParser from 'body-parser'
 // Database imports
 import connectToDb from './db/connect'
+// Config imports
+import config from './config/index'
 // Routes imports
 import projects from './routes/projects.routes'
 import users from './routes/users.routes'
@@ -30,6 +32,6 @@ app.use('/api', users)
 app.use('/api', appointments)
 app.use('/api', dbcsv)
 
-app.listen(8080, () => {
-  console.log('server started - 5000')
+app.listen(config.port, () => {
+  console.log(`Server started on port ${config.port}`)
 })
