@@ -1,17 +1,24 @@
 import { Router } from 'express'
 import Dbcsv from '../controllers/dbcsv.controller'
 const router = new Router()
-
-router.get('/dbcsv/getUsers', (req, res) => {
-  Dbcsv.getUsers(req, res)
+// Actualizar usuarios asociados
+router.get('/dbcsv/updateCSVUA', (req,res) => {
+  Dbcsv.updateCSVUA(req, res)
 })
-
-router.post('/dbcsv/getInfo', (req, res) => {
-  Dbcsv.getInfo(req, res)
+// Actualizar lecturas
+router.get('/dbcsv/updateCSVLEC', (req,res) => {
+  Dbcsv.updateCSVLEC(req, res)
 })
-
-router.get('/dbcsv/getLec', (req, res) => {
-  Dbcsv.getLec(req, res)
+// Consultar usuario
+router.get('/dbcsv/getUserInfo', (req, res) => {
+  Dbcsv.getUserInfo(req, res)
 })
-
+// Consultar estado de caja
+router.get('/dbcsv/getBoxState', (req, res) => {
+  Dbcsv.getBoxState(req, res)
+})
+// Consular información previa
+router.post('/dbcsv/getPreInfo', (req, res) => {
+  Dbcsv.getPreInfo(req, res)
+})
 export default router

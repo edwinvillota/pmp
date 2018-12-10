@@ -55,7 +55,9 @@ class BoxState extends Component {
       users: [],
       concentrador: 0,
       colector: 0,
-      caja: 0
+      caja: 0,
+      //api: 'http://localhost:5000/'
+      api: 'https://agile-shore-21901.herokuapp.com/'
     }
   }
 
@@ -70,7 +72,7 @@ class BoxState extends Component {
     }
     const {colector} = this.state
 
-    let url = `http://localhost:5000/api/dbcsv/getUsers?type=1&number=${colector}`
+    let url = `${this.state.api}api/dbcsv/getBoxState?searchType=1&number=${colector}`
     fetch(url, fetchConf)
       .then(response => {
         if(response.ok) {
@@ -90,13 +92,13 @@ class BoxState extends Component {
     let fetchConf = {
       method: 'POST',
       mode: 'cors',
-      body: JSON.stringify({type: searchType, number: searchNumber}),
+      body: JSON.stringify({searchType: searchType, number: searchNumber}),
       headers: {
         'Content-Type' : 'application/json'
       }
     }
 
-    let url = `http://localhost:5000/api/dbcsv/getInfo`
+    let url = `${this.state.api}api/dbcsv/getPreInfo`
     fetch(url, fetchConf)
       .then(response => {
         if(response.ok) {
@@ -127,7 +129,8 @@ class BoxState extends Component {
           ]
     const users = this.state.users
     let { concentrador, colector, caja } = this.state
-    let anomalies = users.filter(u => u.anomalia !== '')
+    let anomalies = users.filter(u => u.lecturas[0].anomalia)
+    console.log(anomalies)
 
     return(
       <div className='content'>
@@ -218,18 +221,18 @@ class BoxState extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map(row => {
+              {users.map(u => {
                 return (
-                  <TableRow key={row['codigo usuario']}>
+                  <TableRow key={u.usuario}>
                     <TableCell>
-                      {row['codigo usuario']}
+                      {u.usuario}
                     </TableCell>
-                    <TableCell >{row['tipousuario']}</TableCell>
-                    <TableCell numeric>{row['codigo de medidor']}</TableCell>
-                    <TableCell numeric>{row.display}</TableCell>
-                    <TableCell numeric>{row.fecha}</TableCell>
-                    <TableCell numeric>{row.lectura}</TableCell>
-                    <TableCell numeric>{row.anomalia}</TableCell>
+                    <TableCell >{u.tipo}</TableCell>
+                    <TableCell numeric>{u.medidor}</TableCell>
+                    <TableCell numeric>{u.homedisplay}</TableCell>
+                    <TableCell numeric>{u.lecturas[0].fecha_lectura}</TableCell>
+                    <TableCell numeric>{u.lecturas[0].lectura}</TableCell>
+                    <TableCell numeric>{u.lecturas[0].anomalia}</TableCell>
                   </TableRow>
                 );
               })}

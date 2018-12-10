@@ -24,7 +24,6 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import Collapse from '@material-ui/core/Collapse'
-import CheckBox from '@material-ui/icons/CheckBox'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
