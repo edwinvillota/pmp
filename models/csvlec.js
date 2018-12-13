@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
 let csvlecSchema = new Schema({
-    usuario: { type: Schema.Types.ObjectId, ref: 'csvua'},
+    usuario: { type: 'String' },
     medidor: { type: 'Number' },
     fecha_consulta: { type: 'Date' },
     fecha_lectura: { type: 'Date' },

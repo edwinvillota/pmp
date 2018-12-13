@@ -56,8 +56,8 @@ class BoxState extends Component {
       concentrador: 0,
       colector: 0,
       caja: 0,
-      //api: 'http://localhost:5000/'
-      api: 'https://agile-shore-21901.herokuapp.com/'
+      api: 'http://localhost:5000/'
+      //api: 'https://agile-shore-21901.herokuapp.com/'
     }
   }
 
@@ -125,7 +125,8 @@ class BoxState extends Component {
             {name: 'Colector', value: 1},
             {name: 'Caja', value: 2},
             {name: 'Usuario', value: 3},
-            {name: 'Medidor', value: 4}
+            {name: 'Medidor', value: 4},
+            {name: 'Homedisplay', value: 5}
           ]
     const users = this.state.users
     let { concentrador, colector, caja } = this.state

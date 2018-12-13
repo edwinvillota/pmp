@@ -75,12 +75,34 @@ DbcsvController.updateCSVLEC = async (req, res) => {
     })
     .fromString(response.data)
     .then(jsonRow => {
+      console.log(`Borrando base de datos`)
+      mongoose.connection.db.dropCollection('csvlecs',(err, result) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log(result)
+        }
+      })
       console.log(`Actualizando lecturas`)
       let count = 1
       jsonRow.map(l => {
         let newL = new CSVLEC(l)
+        newL.save((err, saved) => {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log(`Total de registros = ${jsonRow.length}`)
+            console.clear()
+            console.log(`Registros actualizados ${count}`)
+            if(jsonRow.length === count){
+              res.status(200).send('Database Update')
+            } else {
+              count += 1
+            }
+          }
+        })
         // Find user _id
-        CSVUA.findOne({ usuario : l.usuario }, (err, user) => {
+/*         CSVUA.findOne({ usuario : l.usuario }, (err, user) => {
           if (err) {
             console.log(err)
           } else {
@@ -100,29 +122,48 @@ DbcsvController.updateCSVLEC = async (req, res) => {
                 count += 1
               }
             }
-          })
-        }
+          }) 
+        } */
       })
     })
-  })
   })
 }
   
 DbcsvController.getUserInfo = async (req, res) => {
   let { user } = req.query
-  if (user) {
-    CSVUA.findOne({usuario: user})
-    .populate('lecturas', ['medidor','fecha_lectura','lectura'])
-    .exec((err, u) => {
-      if (err) {
-        console.log(err)
-      } else {
-        res.status(200).send(u)
+
+  CSVUA.aggregate([
+    {
+      $match: {
+        usuario: '1103846'
       }
-    })
-  } else {
-    res.status(500).send('Missing user code')
-  }
+    },
+    {
+      $lookup:
+        {
+          from: "csvlecs",
+          localField: "usuario",
+          foreignField: "usuario",
+          as: "lecturas"
+        }
+    },
+    {
+      $project: {
+        _id: 1,
+        usuario: 1,
+        georeferencia: 1,
+        medidor: 1,
+        lecturas: 1
+      }
+    }
+  ]).exec((err, result) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.setHeader('Content-Type', 'application/json')
+      res.status(200).send(result)
+    }
+  })
 }
 
 DbcsvController.getBoxState = async (req, res) => {
@@ -135,6 +176,7 @@ DbcsvController.getBoxState = async (req, res) => {
     // 3 - Usuario
     // 4 - Medidor
     // 5 - Homedisplay
+    number = parseInt(number)
     switch (searchType) {
       case '1':
           searchJson = { colector: number }
@@ -152,13 +194,35 @@ DbcsvController.getBoxState = async (req, res) => {
           searchJson = { homedisplay: number }
         break
     }
-    CSVUA.find(searchJson)
-    .populate('lecturas', ['medidor','fecha_lectura','lectura','anomalia'])
-    .exec((err, boxState) => {
+    CSVUA.aggregate([
+      {
+        $match: searchJson 
+      },
+      {
+        $lookup:
+          {
+            from: "csvlecs",
+            localField: "usuario",
+            foreignField: "usuario",
+            as: "lecturas"
+          }
+      },
+      {
+        $project: {
+          usuario: 1,
+          tipo: 1,
+          colector: 1,
+          georeferencia: 1,
+          medidor: 1,
+          homedisplay: 1,
+          lecturas: 1
+        }
+      }
+    ]).exec((err, result) => {
       if (err) {
-        res.status(500).send(err)
+        console.log(err)
       } else {
-        res.status(200).send(boxState)
+        res.status(200).send(result)
       }
     })
   } else {
