@@ -8,6 +8,12 @@ const DbcsvController = {}
 
 DbcsvController.updateCSVUA = async (req, res) => {
   let csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7qHvvXRjG0RnMRio5JTa5qq1vlnubBOB2Hg_gAwKVZM5pHRxjFdEUk1Vy1_EEMuElQbWqqL22FmBh/pub?gid=0&single=true&output=csv'
+  let result = {
+    ok: false,
+    err: 'Ups algo salio mal',
+    records: 0
+  }
+  res.setHeader('Content-Type', 'application/json')
   axios({
     url: csv,
     method: 'GET',
@@ -25,9 +31,10 @@ DbcsvController.updateCSVUA = async (req, res) => {
       console.log(`Borrando base de datos`)
       mongoose.connection.db.dropCollection('csvuas',(err, result) => {
         if (err) {
-          console.log(err)
+          result.err = 'Error: Drop collections'
+          res.status(500).send(JSON.stringify(result))
         } else {
-          console.log(result)
+          console.log('Sucessfull: Collections droped')
         }
       })
       let count = 1
@@ -35,13 +42,17 @@ DbcsvController.updateCSVUA = async (req, res) => {
         let newU = new CSVUA(u)
         newU.save((err, saved) => {
           if (err) {
-            console.log(err)
+            result.err = 'Error: Save new UA'
+            res.status(500).send(JSON.stringify(result))
           } else {
-            console.log(`Total de registros = ${jsonRow.length}`)
+            console.log(`Number of records = ${jsonRow.length}`)
             console.clear()
-            console.log(`Registros actualizados ${count}`)
+            console.log(`Records update ${count}`)
             if(jsonRow.length === count){
-              res.status(200).send('Database Update')
+              result.ok = true
+              result.err = false
+              result.records = count
+              res.status(200).send(result)
             } else {
               count += 1
             }
@@ -54,6 +65,12 @@ DbcsvController.updateCSVUA = async (req, res) => {
 
 DbcsvController.updateCSVLEC = async (req, res) => {
   let csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7qHvvXRjG0RnMRio5JTa5qq1vlnubBOB2Hg_gAwKVZM5pHRxjFdEUk1Vy1_EEMuElQbWqqL22FmBh/pub?gid=393198388&single=true&output=csv'
+  let result = {
+    ok: false,
+    err: 'Ups algo salio mal',
+    records: 0
+  }
+  res.setHeader('Content-Type', 'application/json')
   axios({
     url: csv,
     method: 'GET',
@@ -63,24 +80,17 @@ DbcsvController.updateCSVLEC = async (req, res) => {
     csv2json({
       ignoreEmpty: true,
       headers: ['usuario','medidor','fecha_consulta','fecha_lectura','lectura','anomalia'],
-      colParser: {
-        'fecha_consulta' : function(fecha_consulta){
-          return new Date(fecha_consulta)
-        },
-        'fecha_lectura' : function(fecha_lectura){
-          return new Date(fecha_lectura)
-        },
-      },
       checkType: true
     })
     .fromString(response.data)
-    .then(jsonRow => {
+    .then(jsonRow => { 
       console.log(`Borrando base de datos`)
       mongoose.connection.db.dropCollection('csvlecs',(err, result) => {
         if (err) {
-          console.log(err)
+          result.err = 'Error: Drop Collections'
+          res.status(500).send(JSON.stringify(result))
         } else {
-          console.log(result)
+          console.log('Sucessfull: Collections Droped')
         }
       })
       console.log(`Actualizando lecturas`)
@@ -89,41 +99,22 @@ DbcsvController.updateCSVLEC = async (req, res) => {
         let newL = new CSVLEC(l)
         newL.save((err, saved) => {
           if (err) {
-            console.log(err)
+            result.err = 'Error: Save new Lecture'
+            res.status(500).send(JSON.stringify(result))
           } else {
-            console.log(`Total de registros = ${jsonRow.length}`)
+            console.log(`Number of records = ${jsonRow.length}`)
             console.clear()
-            console.log(`Registros actualizados ${count}`)
+            console.log(`Records Update ${count}`)
             if(jsonRow.length === count){
-              res.status(200).send('Database Update')
+              result.ok = true
+              result.err = false
+              result.records = count 
+              res.status(200).send(result)
             } else {
               count += 1
             }
           }
         })
-        // Find user _id
-/*         CSVUA.findOne({ usuario : l.usuario }, (err, user) => {
-          if (err) {
-            console.log(err)
-          } else {
-            newL.usuario = user._id
-            newL.save((err, saved) => {
-              if (err) {
-                console.log(err)
-              } else {
-                console.log(`Total de registros = ${jsonRow.length}`)
-                console.clear()
-                user.lecturas.push (saved)
-                user.save()
-                console.log(`Registros actualizados ${count}`)
-              if(jsonRow.length === count){
-                res.status(200).send('Database Update')
-              } else {
-                count += 1
-              }
-            }
-          }) 
-        } */
       })
     })
   })

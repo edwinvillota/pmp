@@ -4,8 +4,8 @@ const Schema = mongoose.Schema
 let csvlecSchema = new Schema({
     usuario: { type: 'String' },
     medidor: { type: 'Number' },
-    fecha_consulta: { type: 'Date' },
-    fecha_lectura: { type: 'Date' },
+    fecha_consulta: { type: 'String' },
+    fecha_lectura: { type: 'String' },
     lectura: { type: 'Number' },
     anomalia: { type: 'String' }
 })

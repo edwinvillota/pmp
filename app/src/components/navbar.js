@@ -40,6 +40,8 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    background: 'black',
+    color: 'white'
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -141,6 +143,11 @@ class MiniDrawer extends React.Component {
             <Link className="nav-link" to="/tools/boxState">
               <ListItem button className={classes.nested}>
                 <ListItemText inset primary="Estado de Caja" />
+              </ListItem>
+            </Link>
+            <Link className="nav-link" to="/tools/updateCSV">
+              <ListItem button className={classes.nested}>
+                <ListItemText inset primary="Actualizar CSV" />
               </ListItem>
             </Link>
           </List>

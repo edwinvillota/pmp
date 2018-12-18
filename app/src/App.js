@@ -11,6 +11,7 @@ import Register from './components/register'
 import Login from './components/login'
 import Home from './components/home'
 import BoxState from './components/boxstate'
+import UpdateCSV from './components/updateCSVDB'
 
 if ( localStorage.jwtToken ) {
   setAuthToken(localStorage.jwtToken)
@@ -36,6 +37,7 @@ class App extends Component {
                 <Route exact path='/register' component={ Register } />
                 <Route exact path='/login' component={ Login } />
                 <Route exact path='/tools/boxState' component={ BoxState } />
+                <Route exact path='/tools/updateCSV' component={ UpdateCSV } />
               </div>
             </Navbar>
           </div>

@@ -2,11 +2,11 @@ import { Router } from 'express'
 import Dbcsv from '../controllers/dbcsv.controller'
 const router = new Router()
 // Actualizar usuarios asociados
-router.get('/dbcsv/updateCSVUA', (req,res) => {
+router.post('/dbcsv/updateCSVUA', (req,res) => {
   Dbcsv.updateCSVUA(req, res)
 })
 // Actualizar lecturas
-router.get('/dbcsv/updateCSVLEC', (req,res) => {
+router.post('/dbcsv/updateCSVLEC', (req,res) => {
   Dbcsv.updateCSVLEC(req, res)
 })
 // Consultar usuario

@@ -44,6 +44,15 @@ import {
     margin: theme.spacing.unit,
     marginLeft: '20px'
   },
+  hoverRow: {
+    cursor: 'pointer',
+    '&:hover': {
+      background: 'rgba(0,0,0,.2)'
+    }
+  },
+  anomalia: {
+    background: 'rgba(255,0,0,.2)'
+  }  
 });
 
 class BoxState extends Component {
@@ -56,6 +65,7 @@ class BoxState extends Component {
       concentrador: 0,
       colector: 0,
       caja: 0,
+      //api: 'http://192.168.0.3:5000/'
       api: 'http://localhost:5000/'
       //api: 'https://agile-shore-21901.herokuapp.com/'
     }
@@ -131,7 +141,6 @@ class BoxState extends Component {
     const users = this.state.users
     let { concentrador, colector, caja } = this.state
     let anomalies = users.filter(u => u.lecturas[0].anomalia)
-    console.log(anomalies)
 
     return(
       <div className='content'>
@@ -224,7 +233,7 @@ class BoxState extends Component {
             <TableBody>
               {users.map(u => {
                 return (
-                  <TableRow key={u.usuario}>
+                  <TableRow key={u.usuario} className={`${classes.hoverRow} ${u.lecturas[0].anomalia ? classes.anomalia : ''}`} >
                     <TableCell>
                       {u.usuario}
                     </TableCell>
