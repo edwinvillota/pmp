@@ -8,6 +8,7 @@ import {
 		Button,
 		LinearProgress
 } from '@material-ui/core'
+import socketClient from 'socket.io-client'
 
 const styles = theme => ({
     root: {
@@ -31,9 +32,6 @@ const styles = theme => ({
 		hide: {
 			display: 'none'
 		},
-		success: {
-			color: 'green'
-		},
 		error: {
 			color: 'red'
 		}
@@ -43,26 +41,32 @@ class UpdateCSVDB extends Component {
   constructor() {
     super()
 		this.state = {	
-			uaProgress: false,
+			uaProgress: 0,
+			uaTotal: 0,
 			uaLoad: false,
 			uamessage: '',
 			uamessageV: false,
-			lecProgress: false,
+			uasUpdate: 0,
+			lecProgress: 0,
+			lecTotal: 0,
 			lecLoad: false,
 			lecmessage: '',
 			lecmessageV: false,
-      //api: 'http://192.168.0.3:5000/'
-      api: 'http://localhost:5000/'
-      //api: 'https://agile-shore-21901.herokuapp.com/'
-    }
+			lecsUpdate: 0,
+			//api: 'http://192.168.0.3:5000/'
+			api: 'http://localhost:5000/'
+			//api: 'https://agile-shore-21901.herokuapp.com/'
+		}
 	}
 
 	handleUpdateUA = () => {
 		this.setState({
-			uaProgress: true,
+			uaProgress: 0,
+			uaTotal: 0,
 			uaLoad: false,
 			uamessage: '',
-			uamessageV: false
+			uamessageV: false,
+			uasUpdate: 0
 		})
 
 		let fetchConf = {
@@ -77,11 +81,22 @@ class UpdateCSVDB extends Component {
 				if (response.ok) {
 					response.json().then(json => {
 						if (json.ok) {
+							const endpoint = this.state.api.replace('5000/','4001')
+							const socket = socketClient(endpoint)
 							this.setState({
-								uaProgress: false,
 								uaLoad: true,
-								uamessage: `Se actualizaron ${json.records} registros`,
-								uamessageV: true
+								uamessageV: true,
+								uaTotal: json.records
+							})
+							socket.on('uaProgress', data => {
+								this.setState({
+									uaProgress: (data * 100 / this.state.uaTotal),
+									uasUpdate: data,
+									uamessage: `Se han actualizado ${data} de ${this.state.uaTotal}`
+								})
+								if (data === this.state.uaTotal) {
+									socket.disconnect()
+								}
 							})
 						} else {
 							this.setState({
@@ -98,10 +113,12 @@ class UpdateCSVDB extends Component {
 
 	handleUpdateLEC = () => {
 		this.setState({
-			lecProgress: true,
+			lecProgress: 0,
+			lecTotal: 0,
 			lecLoad: false,
 			lecmessage: '',
-			lecmessageV: false
+			lecmessageV: false,
+			lecsUpdate: 0,
 		})
 
 		let fetchConf = {
@@ -116,11 +133,22 @@ class UpdateCSVDB extends Component {
 				if (response.ok) {
 					response.json().then(json => {
 						if (json.ok) {
+							const endpoint = this.state.api.replace('5000/','4001')
+							const socket = socketClient(endpoint)
 							this.setState({
-								lecProgress: false,
 								lecLoad: true,
-								lecmessage: `Se actualizaron ${json.records} registros`,
-								lecmessageV: true
+								lecmessageV: true,
+								lecTotal: json.records
+							})
+							socket.on('lecProgress', data => {
+								this.setState({
+									lecProgress: (data * 100 / this.state.lecTotal),
+									lecsUpdate: data,
+									lecmessage: `Se han actualizado ${data} de ${this.state.lecTotal}`
+								})
+								if (data === this.state.lecTotal) {
+									socket.disconnect()
+								}
 							})
 						} else {
 							this.setState({
@@ -137,14 +165,14 @@ class UpdateCSVDB extends Component {
 
   render() {
 		const { classes } = this.props
-		let { lecProgress, 
+		let { 		lecProgress, 
 					uaProgress,
 					uaLoad,
 					uamessage,
 					uamessageV,
 					lecLoad,
 					lecmessage,
-					lecmessageV
+					lecmessageV,
 				} = this.state
 
 		let uamClasses
@@ -152,8 +180,7 @@ class UpdateCSVDB extends Component {
 		if (uaLoad) {
 			uamClasses = classNames({
 				[classes.margin]: true,
-				[classes.hide]: !uamessageV,
-				[classes.success]: true
+				[classes.hide]: !uamessageV
 			})
 		} 
 		else {
@@ -169,8 +196,7 @@ class UpdateCSVDB extends Component {
 		if (lecLoad) {
 			lecmClasses = classNames({
 				[classes.margin]: true,
-				[classes.hide]: !lecmessageV,
-				[classes.success]: true
+				[classes.hide]: !lecmessageV
 			})
 		} 
 		else {
@@ -185,41 +211,41 @@ class UpdateCSVDB extends Component {
 				
     return(
       <div className='content'>
-				<Grid container spacing={8}>
-					<Grid item xs={12}>
-						<Typography variant="h4" component="h4" align='center'>
-              Actualización de bases de datos
-            </Typography>
-					</Grid>
-					<Grid item xs={6}>
-						<Button
-								variant="contained"
-								color="primary"
-								className={classes.button}
-								onClick={this.handleUpdateUA}
-								>
-								Actualizar Usuarios Asociados 
-						</Button>
-						<LinearProgress className={`${classes.margin} ${uaProgress ? '' : classes.hide}`} />
-						<Typography variant="h6" component="h6" align='center' className={uamClasses}>
-							{uamessage}
-						</Typography>
-					</Grid>
-					<Grid item xs={6}>
-						<Button
-								variant="contained"
-								color="secondary"
-								className={classes.button}
-								onClick={this.handleUpdateLEC}
-								>
-								Actualizar Lecturas
-						</Button>
-						<LinearProgress className={`${classes.margin} ${lecProgress ? '' : classes.hide}`} color='secondary' />
-						<Typography variant="h6" component="h6" align='center' className={lecmClasses}>
-							{lecmessage}
-						</Typography>
-					</Grid>
+			<Grid container spacing={8}>
+				<Grid item xs={12}>
+					<Typography variant="h4" component="h4" align='center'>
+              			Actualización de bases de datos
+            		</Typography>
 				</Grid>
+				<Grid item xs={6}>
+					<Button
+						variant="contained"
+						color="primary"
+						className={classes.button}
+						onClick={this.handleUpdateUA}
+						>
+						Actualizar Usuarios Asociados 
+					</Button>
+					<LinearProgress className={`${classes.margin} ${uaProgress ? '' : classes.hide}`} variant='determinate' value={uaProgress} />
+					<Typography variant="caption" align='center' gutterBottom className={uamClasses}>
+						{uamessage}
+					</Typography>
+				</Grid>
+				<Grid item xs={6}>
+					<Button
+						variant="contained"
+						color="secondary"
+						className={classes.button}
+						onClick={this.handleUpdateLEC}
+						>
+						Actualizar Lecturas
+					</Button>
+					<LinearProgress className={`${classes.margin} ${lecProgress ? '' : classes.hide}`} color='secondary' variant='determinate' value={lecProgress}/>
+					<Typography variant="caption" align='center' gutterBottom className={lecmClasses}>
+						{lecmessage}
+					</Typography>
+				</Grid>
+			</Grid>
       </div>
     )
   }
