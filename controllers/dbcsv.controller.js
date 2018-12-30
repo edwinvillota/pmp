@@ -3,21 +3,11 @@ import csv2json from 'csvtojson'
 import CSVUA from '../models/csvua'
 import CSVLEC from '../models/csvlec'
 import mongoose from 'mongoose'
-import express from 'express'
-import http from 'http'
-import socketIO from 'socket.io'
+import { socket, emitters } from '../controllers/socket.controller'
 
 const DbcsvController = {}
 
 DbcsvController.updateCSVUA = async (req, res) => {
-  const app = express()
-  app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
-  const server = http.createServer(app)
-  const io = socketIO(server)
   let result = {
     ok: true,
     err: false,
@@ -49,43 +39,25 @@ DbcsvController.updateCSVUA = async (req, res) => {
           console.log('Sucessfull: Collections droped')
         }
       })
-      console.log('Iniciando WebSocket')
       result.records = jsonRow.length
-      try {
-        server.listen(4001, () => res.status(200).send(result))
-      } catch (e) {
-        console.log(e)
-      }
+      res.status(200).send(result)
       let count = 1
-      const emitUas = async socket => {
-        try {
-          setInterval(() => {
-            socket.emit('uaProgress', count)
-          }, 1000)
-        } catch (e) {
-          console.error(`Error: ${error.code}`)
-        }
-      }
-      io.on('connection', socket => {
-        emitUas(socket)
-        jsonRow.map(u => {
-          let newU = new CSVUA(u)
-          newU.save((err, saved) => {
-            if (err) {
-              result.err = 'Error: Save new UA'
+      jsonRow.map(u => {
+        let newU = new CSVUA(u)
+        newU.save((err, saved) => {
+          if (err) {
+            result.err = 'Error: Save new UA'
+          } else {
+            if (jsonRow.length === count) {
+              console.log(`Se actualizaron ${jsonRow.length} Usuarios`)
+              emitters.updateProgress(socket, count)
             } else {
-              if(jsonRow.length === count){
-                server.close(() => {
-                  console.log('Socket Detenido')
-                })
-              } else {
-                count += 1
+              if ((count % 100) == 0) {
+                emitters.updateProgress(socket, count)
               }
+              count += 1
             }
-          })
-        })
-        socket.on('disconnect', () => {
-          console.log('Cliente desconectado')
+          }
         })
       })
     })
@@ -93,14 +65,6 @@ DbcsvController.updateCSVUA = async (req, res) => {
   }
 
 DbcsvController.updateCSVLEC = async (req, res) => {
-  const app = express()
-  app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
-  const server = http.createServer(app)
-  const io = socketIO(server)
   let result = {
     ok: true,
     err: false,
@@ -132,39 +96,25 @@ DbcsvController.updateCSVLEC = async (req, res) => {
           console.log('Sucessfull: Collections Droped')
         }
       })
-      console.log(`Iniciando web socket`)
       result.records = jsonRow.length
-      server.listen(4001, () => res.status(200).send(result))
+      res.status(200).send(result)
       let count = 1
-      const emitLecs = async socket => {
-        try {
-          setInterval(() => {
-            socket.emit('lecProgress', count)
-          },1000)
-        } catch (e) {
-          console.error(`Error: ${error.code}`)
-        }
-      }
-      io.on('connection', socket => {
-        emitLecs(socket)
-        jsonRow.map(l => {
-          let newL = new CSVLEC(l)
-          newL.save((err, saved) => {
-            if (err) {
-              result.err = 'Error: Save new Lecture'
+      jsonRow.map(l => {
+        let newL = new CSVLEC(l)
+        newL.save((err, saved) => {
+          if (err) {
+            result.err = 'Error: Save new Lecture'
+          } else {
+            if (jsonRow.length === count) {
+              console.log(`Se actualizaron ${jsonRow.length} Lecturas`)
+              emitters.updateProgress(socket, count)
             } else {
-              if(jsonRow.length === count){
-                server.close(() => {
-                  console.log('Socket Detenido')
-                })
-              } else {
-                count += 1
+              if ((count % 100) == 0) {
+                emitters.updateProgress(socket, count)
               }
+              count += 1
             }
-          })
-        })
-        socket.on('disconnect', () => {
-          console.log('Cliente desconectado')
+          }
         })
       })
     })

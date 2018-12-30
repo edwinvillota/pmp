@@ -11,6 +11,9 @@ import appointments from './routes/appointments.routes'
 import dbcsv from './routes/dbcsv.routes'
 // Middlewares imports
 import Auth from './middlewares/authorization'
+// Socket server
+import socketServer from './controllers/socket.controller'
+
 let app = express()
 
 connectToDb()
@@ -34,3 +37,8 @@ app.use('/api', dbcsv)
 app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`)
 })
+// Start socket server
+socketServer.listen(config.socketPort, () => {
+  console.log(`Socket started on port ${config.socketPort}`)
+})
+

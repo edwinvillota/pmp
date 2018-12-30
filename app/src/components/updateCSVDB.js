@@ -6,7 +6,9 @@ import {
     Typography,
     Grid,
 		Button,
-		LinearProgress
+		LinearProgress,
+		Chip,
+		Avatar
 } from '@material-ui/core'
 import socketClient from 'socket.io-client'
 
@@ -34,13 +36,25 @@ const styles = theme => ({
 		},
 		error: {
 			color: 'red'
-		}
+	},
+	chip: {
+		margin: theme.spacing.unit,
+		marginLeft: '20px',
+		transition: 'all 1s ease-in'
+		}, 
+	connected: {
+		backgroundColor: 'rgb(9.8%, 67.9%, 9.8%)',
+		color: 'white',
+		transition: 'all 1s ease-in'
+	}	
+	
 })
 
 class UpdateCSVDB extends Component {
   constructor() {
     super()
 		this.state = {	
+			socket: false,
 			uaProgress: 0,
 			uaTotal: 0,
 			uaLoad: false,
@@ -59,7 +73,18 @@ class UpdateCSVDB extends Component {
 		}
 	}
 
+	componentDidMount () {
+		const endpoint = this.state.api.replace('5000/','4001')
+		const socket = socketClient(endpoint)
+		socket.on('connect', () => {
+			this.setState({
+				socket: socket
+			})
+		})
+	}
+
 	handleUpdateUA = () => {
+		const {socket} = this.state 
 		this.setState({
 			uaProgress: 0,
 			uaTotal: 0,
@@ -81,18 +106,16 @@ class UpdateCSVDB extends Component {
 				if (response.ok) {
 					response.json().then(json => {
 						if (json.ok) {
-							const endpoint = this.state.api.replace('5000/','4001')
-							const socket = socketClient(endpoint)
 							this.setState({
 								uaLoad: true,
 								uamessageV: true,
 								uaTotal: json.records
 							})
-							socket.on('uaProgress', data => {
+							socket.on('uProgress', data => {
 								this.setState({
 									uaProgress: (data * 100 / this.state.uaTotal),
 									uasUpdate: data,
-									uamessage: `Se han actualizado ${data} de ${this.state.uaTotal}`
+									uamessage: `Se han actualizado ${data} usuarios de ${this.state.uaTotal}`
 								})
 								if (data === this.state.uaTotal) {
 									socket.disconnect()
@@ -112,6 +135,7 @@ class UpdateCSVDB extends Component {
 	}
 
 	handleUpdateLEC = () => {
+		const {socket} = this.state
 		this.setState({
 			lecProgress: 0,
 			lecTotal: 0,
@@ -133,18 +157,16 @@ class UpdateCSVDB extends Component {
 				if (response.ok) {
 					response.json().then(json => {
 						if (json.ok) {
-							const endpoint = this.state.api.replace('5000/','4001')
-							const socket = socketClient(endpoint)
 							this.setState({
 								lecLoad: true,
 								lecmessageV: true,
 								lecTotal: json.records
 							})
-							socket.on('lecProgress', data => {
+							socket.on('uProgress', data => {
 								this.setState({
 									lecProgress: (data * 100 / this.state.lecTotal),
 									lecsUpdate: data,
-									lecmessage: `Se han actualizado ${data} de ${this.state.lecTotal}`
+									lecmessage: `Se han actualizado ${data} lecturas de ${this.state.lecTotal}`
 								})
 								if (data === this.state.lecTotal) {
 									socket.disconnect()
@@ -165,7 +187,8 @@ class UpdateCSVDB extends Component {
 
   render() {
 		const { classes } = this.props
-		let { 		lecProgress, 
+		let { 		socket,
+					lecProgress, 
 					uaProgress,
 					uaLoad,
 					uamessage,
@@ -216,6 +239,20 @@ class UpdateCSVDB extends Component {
 					<Typography variant="h4" component="h4" align='center'>
               			Actualización de bases de datos
             		</Typography>
+					<Chip
+						avatar={
+						<Avatar
+							className = {classNames({
+								[classes.connected] : socket
+							})}
+						>WS
+						</Avatar>
+						}
+						label='WebSocket'
+						className = {classNames({
+							[classes.chip]: true,
+						})}
+					/>
 				</Grid>
 				<Grid item xs={6}>
 					<Button
