@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
+import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
 import {
     Typography,
@@ -94,43 +95,34 @@ class UpdateCSVDB extends Component {
 			uasUpdate: 0
 		})
 
-		let fetchConf = {
-			method: 'POST',
-			mode: 'cors'
-		}
-
 		let url = `${this.state.api}api/dbcsv/updateCSVUA`
 
-		fetch(url, fetchConf)
-			.then(response => {
-				if (response.ok) {
-					response.json().then(json => {
-						if (json.ok) {
-							this.setState({
-								uaLoad: true,
-								uamessageV: true,
-								uaTotal: json.records
-							})
-							socket.on('uProgress', data => {
-								this.setState({
-									uaProgress: (data * 100 / this.state.uaTotal),
-									uasUpdate: data,
-									uamessage: `Se han actualizado ${data} usuarios de ${this.state.uaTotal}`
-								})
-								if (data === this.state.uaTotal) {
-									socket.disconnect()
-								}
-							})
-						} else {
-							this.setState({
-								uaProgress: false,
-								uaLoad: false,
-								uamessage: json.err,
-								uamessageV: true
-							})
-						}
+		axios.post(url)
+			.then(json => {
+				const data = json.data
+				this.setState({
+					uaLoad: true,
+					uamessageV: true,
+					uaTotal: data.records
+				})
+				socket.on('uProgress', data => {
+					this.setState({
+						uaProgress: (data * 100 / this.state.uaTotal),
+						uasUpdate: data,
+						uamessage: `Se han actualizado ${data} usuarios de ${this.state.uaTotal}`
 					})
-				}
+					if (data === this.state.uaTotal) {
+						socket.removeAllListeners('uProgress')
+					}
+				})
+			})
+			.catch(err => {
+				this.setState({
+					uaProgress: false,
+					uaLoad: false,
+					uamessage: err,
+					uamessageV: true
+				})
 			})
 	}
 
@@ -145,43 +137,34 @@ class UpdateCSVDB extends Component {
 			lecsUpdate: 0,
 		})
 
-		let fetchConf = {
-			method: 'POST',
-			mode: 'cors'
-		}
-
 		let url = `${this.state.api}api/dbcsv/updateCSVLEC`
 
-		fetch(url, fetchConf)
-			.then(response => {
-				if (response.ok) {
-					response.json().then(json => {
-						if (json.ok) {
-							this.setState({
-								lecLoad: true,
-								lecmessageV: true,
-								lecTotal: json.records
-							})
-							socket.on('uProgress', data => {
-								this.setState({
-									lecProgress: (data * 100 / this.state.lecTotal),
-									lecsUpdate: data,
-									lecmessage: `Se han actualizado ${data} lecturas de ${this.state.lecTotal}`
-								})
-								if (data === this.state.lecTotal) {
-									socket.disconnect()
-								}
-							})
-						} else {
-							this.setState({
-								lecProgress: false,
-								lecLoad: false,
-								lecmessage: json.err,
-								lecmessageV: true
-							})
-						}
+		axios.post(url)
+			.then(json => {
+				const data = json.data
+				this.setState({
+					lecLoad: true,
+					lecmessageV: true,
+					lecTotal: data.records
+				})
+				socket.on('uProgress', data => {
+					this.setState({
+						lecProgress: (data * 100 / this.state.lecTotal),
+						lecsUpdate: data,
+						lecmessage: `Se han actualizado ${data} lecturas de ${this.state.lecTotal}`
 					})
-				}
+					if (data === this.state.lecTotal) {
+						socket.removeAllListeners('uProgress')
+					}
+				})
+			})
+			.catch(err => {
+				this.setState({
+					lecProgress: false,
+					lecLoad: false,
+					lecmessage: err,
+					lecmessageV: true
+				})
 			})
 	}
 

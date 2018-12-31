@@ -2,24 +2,22 @@ import jsonwebtoken from 'jsonwebtoken'
 const Auth = {}
 
 Auth.verifyAuth = (req, res, next) => {
-  if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
-    jsonwebtoken.verify(req.headers.authorization.split(' ')[1], 'RESTFULAPIs', (err, decode) => {
-      if (err) req.user = undefined
+  if (req.headers.authorization) {
+    jsonwebtoken.verify(req.headers.authorization, 'RESTFULAPIs', (err, decode) => {
+      if (err) {
+        //req.user = undefined
+        console.log(err)
+      }
       req.user = decode
-      next()
     })
+  } else if (req.user) {
+    console.log('Autorizado por usuario')
   } else {
     req.user = undefined
-    next()
+    return res.send({message: 'Unauthorized'})
   }
+  next()
 }
 
-Auth.requireAuth = (req, res, next) => {
-  if (req.user) {
-    next()
-  } else {
-    return res.status(401).json({ message: 'Unauthorized user' })
-  }
-}
 
 export default Auth

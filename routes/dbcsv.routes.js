@@ -1,6 +1,9 @@
 import { Router } from 'express'
 import Dbcsv from '../controllers/dbcsv.controller'
+import Auth from '../middlewares/authorization'
+
 const router = new Router()
+router.use('/', Auth.verifyAuth)
 // Actualizar usuarios asociados
 router.post('/dbcsv/updateCSVUA', (req,res) => {
   Dbcsv.updateCSVUA(req, res)

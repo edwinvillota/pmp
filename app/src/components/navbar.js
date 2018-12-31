@@ -102,6 +102,13 @@ class MiniDrawer extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const { isAuthenticated } = this.props.auth
+    if (!isAuthenticated) {
+      this.props.history.push('/login')
+    }
+  }
+
   onLogout(e) {
     e.preventDefault()
     this.props.logoutUser(this.props.history)

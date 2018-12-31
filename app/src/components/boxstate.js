@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
+import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
 import {
   Typography,
@@ -76,55 +77,34 @@ class BoxState extends Component {
   }
 
   getUsers = () => {
-    let fetchConf = {
-      method: 'GET',
-      mode: 'cors'
-    }
     const {colector} = this.state
 
     let url = `${this.state.api}api/dbcsv/getBoxState?searchType=1&number=${colector}`
-    fetch(url, fetchConf)
-      .then(response => {
-        if(response.ok) {
-          response.json().then(json => {
-            this.setState({users: json})
-          })
-        }
+    axios.get(url)
+      .then(json => {
+        this.setState({users: json.data})
       })
-      .catch(function(err) {
+      .catch(err => {
         console.log(err)
       })
   }
 
   getInfo = () => {
     const {searchType, searchNumber} = this.state
-
-    let fetchConf = {
-      method: 'POST',
-      mode: 'cors',
-      body: JSON.stringify({searchType: searchType, number: searchNumber}),
-      headers: {
-        'Content-Type' : 'application/json'
-      }
-    }
-
     let url = `${this.state.api}api/dbcsv/getPreInfo`
-    fetch(url, fetchConf)
-      .then(response => {
-        if(response.ok) {
-          response.json().then(json => {
-            if(json.concentrador) {
-              this.setState(json)
-            } else {
-              this.setState({
-                concentrador: 0,
-                colector: 0,
-                caja: 0
-              })
-            }
+    axios.post(url,{searchType: searchType, number: searchNumber})
+      .then(json => {
+        let data = json.data
+        if (data.concentrador) {
+          this.setState(data)
+        } else {
+          this.setState({
+            concentrador: 0,
+            colector: 0,
+            caja: 0
           })
         }
-      }).catch(function(err){
+      }).catch(err => {
         console.log(err)
       })
   }
