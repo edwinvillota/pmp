@@ -4,11 +4,9 @@ const Auth = {}
 Auth.verifyAuth = (req, res, next) => {
   if (req.headers.authorization) {
     jsonwebtoken.verify(req.headers.authorization, 'RESTFULAPIs', (err, decode) => {
-      if (err) {
-        //req.user = undefined
-        console.log(err)
-      }
+      if (err) return res.status(401).send('Unauthorized')
       req.user = decode
+      next()
     })
   } else if (req.user) {
     console.log('Autorizado por usuario')
@@ -16,7 +14,6 @@ Auth.verifyAuth = (req, res, next) => {
     req.user = undefined
     return res.send({message: 'Unauthorized'})
   }
-  next()
 }
 
 

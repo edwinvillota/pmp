@@ -26,6 +26,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import Collapse from '@material-ui/core/Collapse'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import FolderIcon from '@material-ui/icons/Folder'
 
 
 const drawerWidth = 240;
@@ -159,6 +160,12 @@ class MiniDrawer extends React.Component {
             </Link>
           </List>
         </Collapse>
+        <Link className="nav-link" to="/projects">
+          <ListItem button key='Login'>
+            <ListItemIcon><FolderIcon></FolderIcon></ListItemIcon>
+            <ListItemText>Contratos</ListItemText>
+          </ListItem>
+        </Link>
       </List>
     )
 

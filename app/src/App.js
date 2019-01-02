@@ -12,6 +12,7 @@ import Login from './components/login'
 import Home from './components/home'
 import BoxState from './components/boxstate'
 import UpdateCSV from './components/updateCSVDB'
+import Projects from './components/projectsPage'
 
 if ( localStorage.jwtToken ) {
   setAuthToken(localStorage.jwtToken)
@@ -38,6 +39,7 @@ class App extends Component {
                 <Route exact path='/login' component={ Login } />
                 <Route exact path='/tools/boxState' component={ BoxState } />
                 <Route exact path='/tools/updateCSV' component={ UpdateCSV } />
+                <Route exact path='/projects' component={ Projects } />
               </div>
             </Navbar>
           </div>
