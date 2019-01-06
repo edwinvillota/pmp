@@ -1,7 +1,6 @@
 {
   "name": "webproject",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "babel-node server.js --presets env",
@@ -28,5 +27,15 @@
     "sanitize-html": "^1.19.1",
     "socket.io": "^2.2.0",
     "validator": "^10.8.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/edwinvillota/pmp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/edwinvillota/pmp/issues"
+  },
+  "homepage": "https://github.com/edwinvillota/pmp#readme",
+  "description": ""
 }

@@ -1,48 +1,29 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
+import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { getAllProjects } from '../actions/projects'
 import { withStyles } from '@material-ui/core/styles'
 import { 
     Grid,
+    Button
 } from '@material-ui/core'
+import { Add } from '@material-ui/icons'
 import ProjectCard from './projectCard'
 
 const styles = theme => ({
     root: {
         flexGrow: 1,
       },
-      paper: {
-        height: 140,
-        width: 100,
-      },
-      control: {
-        padding: theme.spacing.unit * 2,
-      },
-      card: {
-        maxWidth: 400,
-      },
-      media: {
-        height: 0,
-        paddingTop: '56.25%', // 16:9
-      },
-      actions: {
-        display: 'flex',
-      },
-      expand: {
-        transform: 'rotate(0deg)',
-        marginLeft: 'auto',
-        transition: theme.transitions.create('transform', {
-          duration: theme.transitions.duration.shortest,
-        }),
-      },
-      expandOpen: {
-        transform: 'rotate(180deg)',
-      },
-      avatar: {
-        backgroundColor: '#f44336',
-      },
+    fab: {
+        position: 'fixed',
+        bottom: theme.spacing.unit * 7,
+        right: theme.spacing.unit * 10,
+    },
+    extendedIcon: {
+        marginRight: theme.spacing.unit,
+    },
 })
 
 class ProjectDashboard extends Component {
@@ -58,16 +39,13 @@ class ProjectDashboard extends Component {
     }
 
     render() {
-        const { user } = this.props.auth
         const { classes } = this.props
         const { projects } = this.props.projects
         const ProjectList = projects.map((p,i) => {
             return (
                 <ProjectCard 
                     key={i}
-                    number={p.number}
-                    client={p.client}
-                    description={p.description}
+                    project={p}
                 />
             )
         }) 
@@ -76,6 +54,11 @@ class ProjectDashboard extends Component {
             <div className="content">
                 <Grid container className={classes.root}>
                     {ProjectList}
+                    <Link to='/projects/new'>
+                        <Button variant='fab' aria-label='Add' className={classes.fab} color='secondary'>
+                            <Add />
+                        </Button>
+                    </Link>
                 </Grid>
             </div>
         )
@@ -96,4 +79,4 @@ const mapStateToProps = (state) => ({
     projects: state.projects
 })
 
-export default connect(mapStateToProps, { getAllProjects })(withStyles(styles, {withTheme: true})(ProjectDashboard))
+export default withRouter(withStyles(styles, { withTheme: true })(connect(mapStateToProps, { getAllProjects })(ProjectDashboard)))
