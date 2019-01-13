@@ -66,8 +66,8 @@ class BoxState extends Component {
       concentrador: 0,
       colector: 0,
       caja: 0,
-      //api: 'http://192.168.0.3:5000/'
-      api: 'http://localhost:5000/'
+      api: 'http://192.168.0.203:5000/'
+      //api: 'http://localhost:5000/'
       //api: 'https://agile-shore-21901.herokuapp.com/'
     }
   }

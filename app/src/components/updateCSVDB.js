@@ -68,8 +68,8 @@ class UpdateCSVDB extends Component {
 			lecmessage: '',
 			lecmessageV: false,
 			lecsUpdate: 0,
-			//api: 'http://192.168.0.3:5000/'
-			api: 'http://localhost:5000/'
+			api: 'http://192.168.0.203:5000/'
+			//api: 'http://localhost:5000/'
 			//api: 'https://agile-shore-21901.herokuapp.com/'
 		}
 	}
