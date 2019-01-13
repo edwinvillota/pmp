@@ -17,16 +17,17 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import BuildIcon from '@material-ui/icons/Build'
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
 import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import Collapse from '@material-ui/core/Collapse'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import FolderIcon from '@material-ui/icons/Folder'
+import MoreIcon from '@material-ui/icons/MoreHoriz'
 
 
 const drawerWidth = 240;
@@ -34,6 +35,9 @@ const drawerWidth = 240;
 const styles = theme => ({
   root: {
     display: 'flex',
+    '& .nav-link':{
+      textDecoration: 'none'
+    }
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -141,7 +145,7 @@ class MiniDrawer extends React.Component {
         </ListItem>
         <ListItem button onClick={this.handleToolsExpand}>
           <ListItemIcon>
-            <InboxIcon />
+            <BuildIcon />
           </ListItemIcon>
           <ListItemText inset primary="Herramientas" />
           {this.state.subMenus.tools ? <ExpandLess /> : <ExpandMore />}
@@ -150,11 +154,17 @@ class MiniDrawer extends React.Component {
           <List component="div" disablePadding>
             <Link className="nav-link" to="/tools/boxState">
               <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MoreIcon />
+                </ListItemIcon>
                 <ListItemText inset primary="Estado de Caja" />
               </ListItem>
             </Link>
             <Link className="nav-link" to="/tools/updateCSV">
               <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MoreIcon />
+                </ListItemIcon>
                 <ListItemText inset primary="Actualizar CSV" />
               </ListItem>
             </Link>

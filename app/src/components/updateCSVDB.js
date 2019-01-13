@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import axios from 'axios'
@@ -67,15 +68,12 @@ class UpdateCSVDB extends Component {
 			lecLoad: false,
 			lecmessage: '',
 			lecmessageV: false,
-			lecsUpdate: 0,
-			api: 'http://192.168.0.203:5000/'
-			//api: 'http://localhost:5000/'
-			//api: 'https://agile-shore-21901.herokuapp.com/'
+			lecsUpdate: 0
 		}
 	}
 
 	componentDidMount () {
-		const endpoint = this.state.api.replace('5000/','4001')
+		const endpoint = this.props.apiUrl.replace('3000','4001')
 		const socket = socketClient(endpoint)
 		socket.on('connect', () => {
 			this.setState({
@@ -95,7 +93,7 @@ class UpdateCSVDB extends Component {
 			uasUpdate: 0
 		})
 
-		let url = `${this.state.api}api/dbcsv/updateCSVUA`
+		let url = `${this.props.apiUrl}/api/dbcsv/updateCSVUA`
 
 		axios.post(url)
 			.then(json => {
@@ -137,7 +135,7 @@ class UpdateCSVDB extends Component {
 			lecsUpdate: 0,
 		})
 
-		let url = `${this.state.api}api/dbcsv/updateCSVLEC`
+		let url = `${this.props.apiUrl}/api/dbcsv/updateCSVLEC`
 
 		axios.post(url)
 			.then(json => {
@@ -275,4 +273,8 @@ UpdateCSVDB.propTypes = {
 	classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(UpdateCSVDB)
+const mapStateToProps = (state) => ({
+	apiUrl: state.api.apiUrl
+})
+
+export default withStyles(styles)(connect(mapStateToProps)(UpdateCSVDB))

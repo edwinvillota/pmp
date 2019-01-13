@@ -74,7 +74,7 @@ ProjectDashboard.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    apiUrl: state.api,
+    apiUrl: state.api.apiUrl,
     auth: state.auth,
     projects: state.projects
 })

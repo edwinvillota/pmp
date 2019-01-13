@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import axios from 'axios'
@@ -65,10 +66,7 @@ class BoxState extends Component {
       users: [],
       concentrador: 0,
       colector: 0,
-      caja: 0,
-      api: 'http://192.168.0.203:5000/'
-      //api: 'http://localhost:5000/'
-      //api: 'https://agile-shore-21901.herokuapp.com/'
+      caja: 0
     }
   }
 
@@ -79,7 +77,7 @@ class BoxState extends Component {
   getUsers = () => {
     const {colector} = this.state
 
-    let url = `${this.state.api}api/dbcsv/getBoxState?searchType=1&number=${colector}`
+    let url = `${this.props.apiUrl}/api/dbcsv/getBoxState?searchType=1&number=${colector}`
     axios.get(url)
       .then(json => {
         this.setState({users: json.data})
@@ -91,7 +89,7 @@ class BoxState extends Component {
 
   getInfo = () => {
     const {searchType, searchNumber} = this.state
-    let url = `${this.state.api}api/dbcsv/getPreInfo`
+    let url = `${this.props.apiUrl}/api/dbcsv/getPreInfo`
     axios.post(url,{searchType: searchType, number: searchNumber})
       .then(json => {
         let data = json.data
@@ -121,6 +119,10 @@ class BoxState extends Component {
     const users = this.state.users
     let { concentrador, colector, caja } = this.state
     let anomalies = users.filter(u => u.lecturas[0].anomalia)
+    let metters = users.map(u => {
+      return u.medidor
+    })
+    let metterCount = metters.join('').length / 5
 
     return(
       <div className='content'>
@@ -196,6 +198,12 @@ class BoxState extends Component {
               className={classes.chip}
               color="secondary"
             />
+            <Chip
+              avatar={<Avatar style={{backgroundColor: '#009B0C', color: 'white'}}>M</Avatar>}
+              label={metterCount}
+              className={classes.chip}
+              style={{backgroundColor: '#05D315', color: 'white'}}
+            />
         </Grid>
         <Grid container spacing={24}>
           <Table className={classes.table}>
@@ -238,4 +246,8 @@ BoxState.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(BoxState)
+const mapStateToProps = (state) => ({
+  apiUrl: state.api.apiUrl
+})
+
+export default withStyles(styles)(connect(mapStateToProps)(BoxState))
