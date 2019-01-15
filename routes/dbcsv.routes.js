@@ -24,4 +24,8 @@ router.get('/dbcsv/getBoxState', (req, res) => {
 router.post('/dbcsv/getPreInfo', (req, res) => {
   Dbcsv.getPreInfo(req, res)
 })
+// Actualizar sabana
+router.post('/dbcsv/updateNova', (req, res) => {
+  Dbcsv.updateNova(req, res)
+})
 export default router

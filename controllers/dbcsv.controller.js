@@ -2,6 +2,7 @@ import axios from 'axios'
 import csv2json from 'csvtojson'
 import CSVUA from '../models/csvua'
 import CSVLEC from '../models/csvlec'
+import novauser from '../models/novauser'
 import mongoose from 'mongoose'
 import { socket, emitters } from '../controllers/socket.controller'
 
@@ -62,7 +63,7 @@ DbcsvController.updateCSVUA = async (req, res) => {
       })
     })
    })
-  }
+}
 
 DbcsvController.updateCSVLEC = async (req, res) => {
   let result = {
@@ -200,6 +201,15 @@ DbcsvController.getBoxState = async (req, res) => {
           }
       },
       {
+        $lookup:
+          {
+            from: "novausers",
+            localField: "usuario",
+            foreignField: "usuario",
+            as: "novainfo"
+          }
+      },
+      {
         $project: {
           usuario: 1,
           tipo: 1,
@@ -207,7 +217,8 @@ DbcsvController.getBoxState = async (req, res) => {
           georeferencia: 1,
           medidor: 1,
           homedisplay: 1,
-          lecturas: 1
+          lecturas: 1,
+          novainfo: 1
         }
       }
     ]).exec((err, result) => {
@@ -274,6 +285,62 @@ DbcsvController.getPreInfo = async (req, res) => {
   } else {
     res.status(500).send('Missing parameters')
   }
+}
+
+DbcsvController.updateNova = async (req, res) => {
+  let result = {
+    ok: true,
+    err: false,
+    records: 0
+  }
+  
+  let csv = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaK2BAnTOYb2exQX9vtHgZdykeOtnN-flwv_CZL2uQlqchGBeepEmg6RulYzULaTuDdUZFcgWSA9k_/pub?gid=0&single=true&output=csv'
+  res.setHeader('Content-Type', 'application/json')
+  axios({
+    url: csv,
+    method: 'GET',
+    responseType: 'blob'
+  })
+  .then(response => {
+    csv2json({
+      ignoreEmpty: true,
+      headers: ['usuario','direccion','barrio','nombre'],
+      checkType: true
+    })
+    .fromString(response.data)
+    .then(jsonRow => {
+      console.log(`Borrando base de datos`)
+      mongoose.connection.db.dropCollection('novausers',(err, result) => {
+        if (err) {
+          result.err = 'Error: Drop collections'
+          res.status(500).send(JSON.stringify(result))
+        } else {
+          console.log('Sucessfull: Collections droped')
+        }
+      })
+      result.records = jsonRow.length
+      res.status(200).send(result)
+      let count = 1
+      jsonRow.map(u => {
+        let newU = new novauser(u)
+        newU.save((err, saved) => {
+          if (err) {
+            result.err = 'Error: Save new user Nova'
+          } else {
+            if (jsonRow.length === count) {
+              console.log(`Se actualizaron ${jsonRow.length} Usuarios Nova`)
+              emitters.updateProgress(socket, count)
+            } else {
+              if ((count % 1000) == 0) {
+                emitters.updateProgress(socket, count)
+              }
+              count += 1
+            }
+          }
+        })
+      })
+    })
+  })
 }
 
 export default DbcsvController

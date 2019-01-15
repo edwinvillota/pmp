@@ -215,7 +215,8 @@ class BoxState extends Component {
                 <TableCell numeric>Homedisplay</TableCell>
                 <TableCell numeric>Fecha</TableCell>
                 <TableCell numeric>Lectura</TableCell>
-                <TableCell numeric>Anomalia</TableCell>
+                <TableCell >Direccion</TableCell>
+                <TableCell >Anomalia</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -230,7 +231,8 @@ class BoxState extends Component {
                     <TableCell numeric>{u.homedisplay}</TableCell>
                     <TableCell numeric>{u.lecturas[0].fecha_lectura}</TableCell>
                     <TableCell numeric>{u.lecturas[0].lectura}</TableCell>
-                    <TableCell numeric>{u.lecturas[0].anomalia}</TableCell>
+                    <TableCell >{u.novainfo[0].direccion.toLow}</TableCell>
+                    <TableCell >{u.lecturas[0].anomalia}</TableCell>
                   </TableRow>
                 );
               })}
