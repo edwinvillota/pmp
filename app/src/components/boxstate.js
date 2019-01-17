@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
+import UserCedInfo from './userCedInfo'
 import {
   Typography,
   Grid,
@@ -54,7 +55,11 @@ import {
   },
   anomalia: {
     background: 'rgba(255,0,0,.2)'
-  }  
+  },
+  found: {
+    border: 'solid 2px white',
+    boxShadow: '3px 3px 5px rgba(0,0,0,.5)'
+  }
 });
 
 class BoxState extends Component {
@@ -66,12 +71,19 @@ class BoxState extends Component {
       users: [],
       concentrador: 0,
       colector: 0,
-      caja: 0
+      caja: 0,
+      selectedUser: {}
     }
   }
 
+
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value }, () => { this.getInfo() })
+  }
+
+  handleSelectUser = user => e => {
+    e.preventDefault()
+    this.setState({ selectedUser : user })
   }
 
   getUsers = () => {
@@ -205,7 +217,7 @@ class BoxState extends Component {
               style={{backgroundColor: '#05D315', color: 'white'}}
             />
         </Grid>
-        <Grid container spacing={24}>
+        <Grid container>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>
@@ -221,8 +233,22 @@ class BoxState extends Component {
             </TableHead>
             <TableBody>
               {users.map(u => {
+                let novainfo = u.novainfo[0] ? u.novainfo[0] : {direccion: ''}
+                let foundNumber
+                if ((this.state.searchType === 3 && this.state.searchNumber === u.usuario.toString()) ||
+                    (this.state.searchType === 4 && parseInt(this.state.searchNumber) === u.medidor) ||
+                    (this.state.searchType === 5 && parseInt(this.state.searchNumber) === u.homedisplay)
+                  ) {
+                  foundNumber = classes.found
+                } else {
+                  foundNumber = ''
+                }
                 return (
-                  <TableRow key={u.usuario} className={`${classes.hoverRow} ${u.lecturas[0].anomalia ? classes.anomalia : ''}`} >
+                  <TableRow 
+                    key={u.usuario} 
+                    className={`${classes.hoverRow} ${u.lecturas[0].anomalia ? classes.anomalia : ''} ${foundNumber}`}
+                    onClick={this.handleSelectUser(u)} 
+                  >
                     <TableCell>
                       {u.usuario}
                     </TableCell>
@@ -231,13 +257,16 @@ class BoxState extends Component {
                     <TableCell numeric>{u.homedisplay}</TableCell>
                     <TableCell numeric>{u.lecturas[0].fecha_lectura}</TableCell>
                     <TableCell numeric>{u.lecturas[0].lectura}</TableCell>
-                    <TableCell >{u.novainfo[0].direccion.toLow}</TableCell>
+                    <TableCell >{novainfo.direccion.toLowerCase()}</TableCell>
                     <TableCell >{u.lecturas[0].anomalia}</TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
           </Table>
+        </Grid>
+        <Grid item xs={12}>
+            {/* <UserCedInfo usuario={this.state.selectedUser} /> */}
         </Grid>
       </div>
     )
