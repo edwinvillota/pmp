@@ -16,6 +16,7 @@ import {
     InputLabel,
     Divider
 } from '@material-ui/core'
+import InterventorList from './interventorList'
 
 
 const styles = theme => ({
@@ -105,6 +106,9 @@ class NewProject extends Component {
                                 <Grid item xs={12}>
                                     <FormLabel component='legend' className={classes.root}>Interventores</FormLabel>
                                 </Grid>
+                                <Grid item xs={12}>
+                                    <InterventorList maxItems={3}/>
+                                </Grid>
                             </form>
                         </Grid>
                     </Paper>
@@ -114,7 +118,7 @@ class NewProject extends Component {
     }
 }
 
-Paper.propTypes = {
+NewProject.propTypes = {
     classes: PropTypes.object.isRequired
 }
 

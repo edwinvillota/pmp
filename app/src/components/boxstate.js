@@ -47,6 +47,19 @@ import {
     margin: theme.spacing.unit,
     marginLeft: '20px'
   },
+  historyChip: {
+    margin: theme.spacing.unit,
+    marginLeft: '10px',
+    height: '20px',
+    cursor: 'pointer'
+  },
+  avatar: {
+    backgroundColor: '#363636',
+    color: 'white',
+    height: '20px',
+    width: '20px',
+    fontSize: '11px'
+  },
   hoverRow: {
     cursor: 'pointer',
     '&:hover': {
@@ -62,6 +75,57 @@ import {
   }
 });
 
+
+class History extends Component {
+  constructor() {
+    super()
+  }
+
+  render() {
+    const { 
+     classes
+    } = this.props
+    let searchs = this.props.searchs.reverse()
+    if (searchs.length < 1) {return(<Grid></Grid>)}
+    let chips = searchs.map((s, i) => {
+      let avatar
+      switch (s.type) {
+        case 1:
+          avatar = 'CL'
+          break
+        case 2:
+          avatar = 'CJ'
+          break
+        case 3:
+          avatar = 'U'
+          break
+        case 4:
+          avatar= 'M'
+          break
+        case 5:
+          avatar= 'HD'
+        default:
+          break
+      }
+      return(
+        <Chip
+          key={i}
+          avatar={<Avatar className={classes.avatar}>{avatar}</Avatar>}
+          className={classes.historyChip}
+          label={s.number}
+          onClick={this.props.handleClick(s)}
+        />
+      )
+    })
+    return(
+      <Grid container>
+        {chips}
+      </Grid>
+    )
+  }
+}
+
+
 class BoxState extends Component {
   constructor() {
     super()
@@ -72,10 +136,11 @@ class BoxState extends Component {
       concentrador: 0,
       colector: 0,
       caja: 0,
-      selectedUser: {}
+      selectedUser: {},
+      searchs: []
     }
+    this.handleHistoryClick = this.handleHistoryClick.bind(this)
   }
-
 
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value }, () => { this.getInfo() })
@@ -87,12 +152,29 @@ class BoxState extends Component {
   }
 
   getUsers = () => {
-    const {colector} = this.state
-
+    const {
+      searchType,
+      searchNumber,
+      colector,
+      searchs
+    } = this.state
+    let newSearch = {
+      type: searchType,
+      number: searchNumber
+    }
+    let newSearchs = searchs.filter(s => s.number != newSearch.number)
+    newSearchs.push(newSearch)
+    while(newSearchs.length > 10) {
+      newSearch.shift()
+    }
+    let history = newSearchs
     let url = `${this.props.apiUrl}/api/dbcsv/getBoxState?searchType=1&number=${colector}`
     axios.get(url)
       .then(json => {
-        this.setState({users: json.data})
+        this.setState({
+          users: json.data,
+          searchs: history
+        })
       })
       .catch(err => {
         console.log(err)
@@ -117,6 +199,16 @@ class BoxState extends Component {
       }).catch(err => {
         console.log(err)
       })
+  }
+
+  handleHistoryClick = s => event => {
+    event.preventDefault()
+    this.setState({
+      searchNumber: parseInt(s.number),
+      searchType: s.type,
+    }, () => { 
+      this.getInfo()
+    })
   }
 
   render() {
@@ -166,6 +258,7 @@ class BoxState extends Component {
               className={classNames(classes.margin, classes.textField)}
               variant="outlined"
               onChange={this.handleChange('searchNumber')}
+              value={this.state.searchNumber}
             />
           </Grid>
           <Grid item xs={2}>
@@ -266,6 +359,11 @@ class BoxState extends Component {
           </Table>
         </Grid>
         <Grid item xs={12}>
+          <History 
+              searchs={this.state.searchs} 
+              classes={classes}
+              handleClick={this.handleHistoryClick}
+            />
             {/* <UserCedInfo usuario={this.state.selectedUser} /> */}
         </Grid>
       </div>
