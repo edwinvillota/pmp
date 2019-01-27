@@ -304,7 +304,7 @@ DbcsvController.updateNova = async (req, res) => {
   .then(response => {
     csv2json({
       ignoreEmpty: true,
-      headers: ['usuario','direccion','barrio','nombre'],
+      headers: ['usuario','direccion','barrio','nombre','estado_comercial','marca_nova','medidor','fases','con0','con1','con2','lec0','lec1','lec2','fec0','fec1','fec2','cri0','cri1','cri2'],
       checkType: true
     })
     .fromString(response.data)
@@ -321,24 +321,45 @@ DbcsvController.updateNova = async (req, res) => {
       result.records = jsonRow.length
       res.status(200).send(result)
       let count = 1
-      jsonRow.map(u => {
-        let newU = new novauser(u)
-        newU.save((err, saved) => {
+
+      for (let i = 0; i < jsonRow.length; i++) {
+        let newU = jsonRow[i]
+        let consumos = []
+        
+        let unnecessaryProps = ['con0','con1','con2','lec0','lec1','lec2','fec0','fec1','fec2','cri0','cri1','cri2']
+  
+        for (let i=0;i<3;i++){
+          consumos.push({
+            kwh: newU['con'+i],
+            lectura: newU['lec'+i],
+            fecha: newU['fec'+i],
+            critica: newU['cri'+i]
+          })        
+        }
+        // Delete unnecessary properties
+        unnecessaryProps.forEach((p) => {
+          delete newU[p]
+        })
+        // Add user consumptions
+        newU.consumos = consumos
+        let newNovaUser = new novauser(newU)
+        
+        // Save new Nova User
+        newNovaUser.save((err, saved) => {
           if (err) {
+            console.log(err)
             result.err = 'Error: Save new user Nova'
           } else {
             if (jsonRow.length === count) {
               console.log(`Se actualizaron ${jsonRow.length} Usuarios Nova`)
-              emitters.updateProgress(socket, count)
             } else {
-              if ((count % 1000) == 0) {
-                emitters.updateProgress(socket, count)
-              }
+              console.log(`Se han actualizado ${count} usuarios de nova`)
               count += 1
             }
           }
         })
-      })
+
+      }
     })
   })
 }

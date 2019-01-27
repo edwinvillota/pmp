@@ -100,12 +100,14 @@ class History extends Component {
           avatar = 'U'
           break
         case 4:
-          avatar= 'M'
+          avatar = 'M'
           break
         case 5:
-          avatar= 'HD'
-        default:
+          avatar = 'HD'
           break
+        default:
+          avatar = 'CL'
+          break  
       }
       return(
         <Chip
@@ -162,10 +164,10 @@ class BoxState extends Component {
       type: searchType,
       number: searchNumber
     }
-    let newSearchs = searchs.filter(s => s.number != newSearch.number)
+    let newSearchs = searchs.filter(s => s.number !== newSearch.number)
     newSearchs.push(newSearch)
-    while(newSearchs.length > 10) {
-      newSearch.shift()
+    while (newSearchs.length > 10) { 
+      newSearchs.shift() 
     }
     let history = newSearchs
     let url = `${this.props.apiUrl}/api/dbcsv/getBoxState?searchType=1&number=${colector}`
@@ -364,7 +366,7 @@ class BoxState extends Component {
               classes={classes}
               handleClick={this.handleHistoryClick}
             />
-            {/* <UserCedInfo usuario={this.state.selectedUser} /> */}
+            <UserCedInfo usuario={this.state.selectedUser} />
         </Grid>
       </div>
     )

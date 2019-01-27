@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import AddIcon from '@material-ui/icons/Add'
 import {
     Grid,
-    Typography,
+    // Typography,
     Button,
     TextField,
     Chip,
@@ -105,7 +105,7 @@ class InterventorsList extends Component {
 
     handleDeleteInterventor = i => event => {
         event.preventDefault()
-        let newInterventors = this.state.interventors.filter(int => int != i)
+        let newInterventors = this.state.interventors.filter(int => int !== i)
         let addCompVisibility
         if (newInterventors.length < this.props.maxItems) {
             addCompVisibility = true
