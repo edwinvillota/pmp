@@ -27,10 +27,11 @@ app.use(function (req, res, next) {
   next()
 
 })
-app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }))
+app.use(bodyParser.json())
+
 // Routes
 app.use('/api', projects)
 app.use('/api', users)

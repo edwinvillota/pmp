@@ -5,8 +5,76 @@ import CSVLEC from '../models/csvlec'
 import novauser from '../models/novauser'
 import mongoose from 'mongoose'
 import { socket, emitters } from '../controllers/socket.controller'
+import Formidable from 'formidable'
+import FileReader from 'filereader'
 
 const DbcsvController = {}
+
+DbcsvController.CSVTypes = [
+  {
+    id: 1,
+    name: 'Usuarios Asociados',
+    headers: [ 
+      'codigo de transformador',
+      'capacidadtransformador',
+      'georeferencia',
+      'tipotransformador',
+      'direccion',
+      'codigo nodo',
+      'codigo usuario',
+      'tipousuario',
+      'codigo concentrador',
+      'codigo de caja',
+      'codigo de colector',
+      'codigo de medidor',
+      'display',
+      'estado',
+      'limite',
+      'estado servicio' 
+    ],
+    ignore: /(id_colector|transformador|capacidad|tipotransformador|direccion|nodo|estado)/,
+    keys: [
+      'id_colector',
+      'transformador',
+      'capacidad',
+      'georeferencia',
+      'tipotransformador',
+      'direccion',
+      'nodo',
+      'usuario',
+      'tipo',
+      'concentrador',
+      'caja',
+      'colector',
+      'medidor',
+      'homedisplay',
+      'estado',
+      'limite',
+      'servicio'
+    ] 
+  },
+  {
+    id: 2,
+    name: 'Lecturas',
+    headers: [ 
+      'codigo usuario',
+      'codigo medidor',
+      'fecha consulta',
+      'fecha lectura',
+      'lectura final',
+      'anomalia' 
+    ],
+    ignore: false,
+    keys: [
+      'usuario',
+      'medidor',
+      'fecha_consulta',
+      'fecha_lectura',
+      'lectura',
+      'anomalia'
+    ]
+  },
+]
 
 DbcsvController.updateCSVUA = async (req, res) => {
   let result = {
@@ -26,7 +94,7 @@ DbcsvController.updateCSVUA = async (req, res) => {
     csv2json({
       ignoreEmpty: true,
       ignoreColumns: /(id_colector|transformador|capacidad|tipotransformador|direccion|nodo|estado)/,
-      headers: ['id_colector','transformador','capacidad','georeferencia','tipotransformador','direccion','nodo','usuario','tipo','concentrador','caja','colector','medidor','homedisplay','estado'],
+      headers: ['id_colector','transformador','capacidad','georeferencia','tipotransformador','direccion','nodo','usuario','tipo','concentrador','caja','colector','medidor','homedisplay','estado','limite','servicio'],
       checkType: true
     })
     .fromString(response.data)
@@ -218,7 +286,8 @@ DbcsvController.getBoxState = async (req, res) => {
           medidor: 1,
           homedisplay: 1,
           lecturas: 1,
-          novainfo: 1
+          novainfo: 1,
+          servicio: 1,
         }
       }
     ]).exec((err, result) => {
@@ -360,6 +429,64 @@ DbcsvController.updateNova = async (req, res) => {
         })
 
       }
+    })
+  })
+}
+
+DbcsvController.loadCSV = async (req, res) => {
+  let form = new Formidable.IncomingForm()
+  form.parse(req,(err, fields, files) => {
+  })
+  form.on('file', async (name, file) => {
+    const csv = await DbcsvController.fileToCSV(file)
+    const {CSVTypes} = DbcsvController
+    let typeFlag = false
+    CSVTypes.forEach(async type => {
+      if(type.headers.toString() === Object.keys(csv[0]).toString()) {
+        typeFlag = true
+        res.status(200).json({
+          type: type.id,
+          name: type.name,
+          keys: type.keys,
+          data: csv,
+          error: false
+        })
+      } 
+    })
+    if (!typeFlag) {
+      res.status(200).json({
+        type: 0,
+        name: false,
+        error: 'Archivo Desconocido'
+      })
+    }
+  })
+}
+
+DbcsvController.fileToCSV = async (file, headers=false, ignore=false) => {
+  return new Promise(resolve => {
+    let reader = new FileReader()
+    reader.readAsText(file)
+    reader.on('load', e => {
+      const result = e.target.result
+      csv2json({
+        noheader: true,
+        output: 'line',
+      })
+      .fromString(result)
+      .then(csvRow => {
+        csv2json({
+          delimiter: ';',
+          eol: '\r',
+          checkType: true,
+          ignoreColumns: ignore,
+          headers: headers,
+        })
+        .fromString(csvRow.join('\r'))
+        .then(json => {
+          resolve(json)
+        })
+      })
     })
   })
 }

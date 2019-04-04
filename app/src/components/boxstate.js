@@ -235,7 +235,7 @@ class BoxState extends Component {
         <Grid container spacing={8}>
           <Grid item xs={12}>
             <Typography variant="h4" component="h4" align='center'>
-              Verificación de Cajas
+              VERIFICACIÓN DE CAJAS 
             </Typography>
           </Grid>
           <Grid item xs={5}>
@@ -320,9 +320,9 @@ class BoxState extends Component {
                 <TableCell>Tipo</TableCell>
                 <TableCell numeric>Medidor</TableCell>
                 <TableCell numeric>Homedisplay</TableCell>
-                <TableCell numeric>Fecha</TableCell>
                 <TableCell numeric>Lectura</TableCell>
                 <TableCell >Direccion</TableCell>
+                <TableCell > Estado </TableCell>
                 <TableCell >Anomalia</TableCell>
               </TableRow>
             </TableHead>
@@ -350,9 +350,9 @@ class BoxState extends Component {
                     <TableCell >{u.tipo}</TableCell>
                     <TableCell numeric>{u.medidor}</TableCell>
                     <TableCell numeric>{u.homedisplay}</TableCell>
-                    <TableCell numeric>{u.lecturas[0].fecha_lectura}</TableCell>
                     <TableCell numeric>{u.lecturas[0].lectura}</TableCell>
                     <TableCell >{novainfo.direccion.toLowerCase()}</TableCell>
+                    <TableCell >{u.servicio}</TableCell>
                     <TableCell >{u.lecturas[0].anomalia}</TableCell>
                   </TableRow>
                 );

@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core'
 import { Add } from '@material-ui/icons'
 import ProjectCard from './projectCard'
+import Register from './register'
 
 const styles = theme => ({
     root: {
@@ -53,12 +54,14 @@ class ProjectDashboard extends Component {
         return (
             <div className="content">
                 <Grid container className={classes.root}>
-                    {ProjectList}
+                    {/* {ProjectList}
                     <Link to='/projects/new'>
                         <Button variant='fab' aria-label='Add' className={classes.fab} color='secondary'>
                             <Add />
                         </Button>
                     </Link>
+                     */}
+                     <Register></Register>
                 </Grid>
             </div>
         )

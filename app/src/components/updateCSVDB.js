@@ -10,9 +10,11 @@ import {
 		Button,
 		LinearProgress,
 		Chip,
-		Avatar
+		Avatar,
+		ButtonBase
 } from '@material-ui/core'
 import socketClient from 'socket.io-client'
+import UploadCSVButton from './uploadCSVButton'
 
 const styles = theme => ({
     root: {
@@ -68,7 +70,8 @@ class UpdateCSVDB extends Component {
 			lecLoad: false,
 			lecmessage: '',
 			lecmessageV: false,
-			lecsUpdate: 0
+			lecsUpdate: 0,
+			fileType: false
 		}
 	}
 
@@ -166,9 +169,27 @@ class UpdateCSVDB extends Component {
 			})
 	}
 
+	handleUploadFile = file => {
+		let data = new FormData()
+		let url = `${this.props.apiUrl}/api/dbcsv/loadCSV`
+		data.append('file', file)
+
+		axios.post(url, data, {
+			headers: {'Content-Type': 'multipart/form-data'}
+		})
+			.then(response => {
+				this.setState({
+					fileType: response.data
+				})
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+
   render() {
 		const { classes } = this.props
-		let { 		socket,
+		let { socket,
 					lecProgress, 
 					uaProgress,
 					uaLoad,
@@ -263,7 +284,12 @@ class UpdateCSVDB extends Component {
 						{lecmessage}
 					</Typography>
 				</Grid>
+				<UploadCSVButton 
+					handleUpload={this.handleUploadFile}
+					fileType={this.state.fileType}
+					/>
 			</Grid>
+				
       </div>
     )
   }

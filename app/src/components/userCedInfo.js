@@ -106,6 +106,10 @@ class userCedInfo extends Component {
                                 <td><Typography align='right'>{usuario.georeferencia}</Typography></td>
                             </tr>
                             <tr>
+                                <td><Typography variant='subtitle2'>Fecha de Lectura:</Typography></td>
+                                <td><Typography align='right'>{existNovainfo ? usuario.lecturas[0].fecha_lectura : ''}</Typography></td>
+                            </tr>
+                            <tr>
                                 <td><Typography variant='subtitle2'>Nombre:</Typography></td>
                                 <td><Typography align='right'>{existNovainfo ? usuario.novainfo[0].nombre : ''}</Typography></td>
                             </tr>

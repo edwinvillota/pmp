@@ -28,4 +28,10 @@ router.post('/dbcsv/getPreInfo', (req, res) => {
 router.post('/dbcsv/updateNova', (req, res) => {
   Dbcsv.updateNova(req, res)
 })
+
+// Ingresar CSV
+router.post('/dbcsv/loadCSV', (req, res) => {
+  Dbcsv.loadCSV(req, res)
+})
+
 export default router
