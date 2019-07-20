@@ -30,7 +30,7 @@ app.use(function (req, res, next) {
 app.use(bodyParser.urlencoded({
   extended: true
 }))
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '1020kb'}))
 
 // Routes
 app.use('/api', projects)

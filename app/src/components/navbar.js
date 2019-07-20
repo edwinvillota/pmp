@@ -168,6 +168,14 @@ class MiniDrawer extends React.Component {
                 <ListItemText inset primary="Actualizar CSV" />
               </ListItem>
             </Link>
+            <Link className="nav-link" to="/tools/testPage">
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MoreIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Pruebas" />
+              </ListItem>
+            </Link>
           </List>
         </Collapse>
         <Link className="nav-link" to="/projects">

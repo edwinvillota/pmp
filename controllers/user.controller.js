@@ -46,13 +46,18 @@ UserController.sign_in = (req, res) => {
   User.findOne({
     CC: req.body.user.CC
   }, (err, user) => {
-    if (err) throw err
-    user.comparePassword(req.body.user.password, (err, isMatch) => {
-      if (err) throw err
-      if (isMatch) {
-        return res.json({ token: jwt.sign({ CC: user.CC, name: `${user.name} ${user.lastname}` }, 'RESTFULAPIs') })
-      }
-    })
+    if (!err && user) {
+      user.comparePassword(req.body.user.password, (err, isMatch) => {
+        if (err) throw err
+        if (isMatch) {
+          return res.json({ token: jwt.sign({ CC: user.CC, name: `${user.name} ${user.lastname}` }, 'RESTFULAPIs') })
+        } else {
+          return res.json({ token: false, error: 'Datos incorrectos' })
+        }
+      })      
+    } else {
+      return res.json({ token: false, error: 'Datos incorrectos'})
+    }
   })
 }
 

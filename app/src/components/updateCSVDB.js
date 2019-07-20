@@ -7,11 +7,11 @@ import { withStyles } from '@material-ui/core/styles'
 import {
     Typography,
     Grid,
-		Button,
-		LinearProgress,
-		Chip,
-		Avatar,
-		ButtonBase
+	Button,
+	LinearProgress,
+	Chip,
+	Avatar,
+	ButtonBase
 } from '@material-ui/core'
 import socketClient from 'socket.io-client'
 import UploadCSVButton from './uploadCSVButton'
@@ -57,7 +57,7 @@ const styles = theme => ({
 class UpdateCSVDB extends Component {
   constructor() {
     super()
-		this.state = {	
+	this.state = {	
 			socket: false,
 			uaProgress: 0,
 			uaTotal: 0,
@@ -76,7 +76,7 @@ class UpdateCSVDB extends Component {
 	}
 
 	componentDidMount () {
-		const endpoint = this.props.apiUrl.replace('3000','4001')
+		const endpoint = this.props.apiUrl.replace('5000','4001')
 		const socket = socketClient(endpoint)
 		socket.on('connect', () => {
 			this.setState({

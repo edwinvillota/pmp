@@ -34,4 +34,9 @@ router.post('/dbcsv/loadCSV', (req, res) => {
   Dbcsv.loadCSV(req, res)
 })
 
+// Ingresar PDF
+router.post('/dbcsv/loadOrder', (req, res) => {
+  Dbcsv.PDFToOrder(req, res)
+})
+
 export default router
