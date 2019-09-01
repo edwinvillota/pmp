@@ -17,7 +17,8 @@ import {
     CircularProgress
 } from '@material-ui/core'
 import {
-    InsertDriveFile
+    InsertDriveFile,
+    List
 } from '@material-ui/icons'
 import {
     green
@@ -44,7 +45,7 @@ const styles = theme => ({
         overflow: 'hidden',
         padding: '.5em',
         '&:hover': {
-            borderColor: '#DF320D'
+            borderColor: 'black'
         }
     },
     dropAreaText: {
@@ -83,7 +84,7 @@ const styles = theme => ({
         transition: 'color .5s ease-in'
     },
     fileItemIconLoaded: {
-        color: '#DF320D',
+        color: '#10AFD6',
         fontSize: '3em'
     },
     fileItemIconUploading: {
@@ -128,24 +129,26 @@ class FilesUploader extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            typeFile: this.props.typeFile
+            typeFile: this.props.typeFile,
+            multiple: this.props.multiple,
+            icon: this.props.icon,
+            iconColor: this.props.iconColor
         }
     }
 
     // On load files
     handleChange = e => {
         const files = e.target.files
-        Array.from(files).forEach(file => {
+        Array.from(files).forEach((file, i) => {
             let fileReader = new FileReader()
             fileReader.onload = () => {
-                this.props.addFileToUpload(`${file.name}`, fileReader.result)
+               this.props.addFileToUpload(`${file.name}`, fileReader.result)
             }
             fileReader.readAsDataURL(file)
         })
     }
 
     handleClick = e => {
-        e.preventDefault()
         if (this.props.filesLoader.filesToUpload.length != 0) {
             this.props.cleanFilesToUpload()
         }    
@@ -165,6 +168,7 @@ class FilesUploader extends Component {
     }
 
     handleDrop = e => {
+        const { multiple } = this.state
         e.preventDefault()
         this.props.cleanFilesToUpload()
         e.target.classList.remove(this.props.classes.onDragOver)
@@ -176,6 +180,7 @@ class FilesUploader extends Component {
         }
         e.target.value=''
         Array.from(files).forEach((file,i) => {
+            if (!multiple && i > 0) return false
             let fileReader = new FileReader()
             fileReader.onload = () => {
                 this.props.addFileToUpload(`${file.name}`, fileReader.result)
@@ -197,14 +202,15 @@ class FilesUploader extends Component {
             status
         } = this.props.filesLoader
         const {
-                typeFile
+                typeFile,
+                icon
             } = this.state
         const buttonClassName = classNames({
             [classes.buttonSuccess]: (status === 'SUCCESS')
         })
         const fileItems = (filesToUpload.length > 0) ? filesToUpload.map((file,key) => {
             return(
-                <FileItem classes={classes} key={key} id={key} file={file}/>
+                <FileItem classes={classes} key={key} id={key} file={file} icon={icon}/>
             )
         }) : false
 
@@ -227,7 +233,7 @@ class FilesUploader extends Component {
                             id='files_input'
                             className={classes.hide}
                             type='file'
-                            multiple
+                            multiple={this.state.multiple}
                             onChange={this.handleChange}
                             />
                         <Grid
@@ -251,7 +257,7 @@ class FilesUploader extends Component {
                             onClick={this.handleUploadFiles}
                             disabled={(status === 'UPLOADING')}
                             >
-                                Subir
+                                Cargar
                             {(status === 'UPLOADING') && <CircularProgress size={24} className={classes.buttonProgress} />}
                         </Button>
                     </div>
@@ -271,7 +277,7 @@ class FileItem extends Component {
             status: this.props.file.status,
             classes: this.props.classes,
             visible: false,
-
+            icon: this.props.icon
         }
     }
 
@@ -285,8 +291,10 @@ class FileItem extends Component {
 
     render() {
         const {classes} = this.props
-        const {id, name, visible} = this.state
+        const {id, name, visible, icon} = this.state
         const {status} = this.props.file
+
+
         let iconClass
         switch (status) {
             case 'LOADED':
@@ -302,15 +310,28 @@ class FileItem extends Component {
                 break
         }
 
+        const Icon = () => {
+            switch (icon) {
+                case 'InsertDriveFile':
+                    return (
+                        <InsertDriveFile className={classNames(classes.fileItemIcon, iconClass)}/>
+                    )
+                case 'List':
+                    return (
+                        <List className={classNames(classes.fileItemIcon, iconClass)}/>
+                    )
+                default:
+                    break;
+            }
+        }
+
         return(
             <div 
                 className={classNames(classes.fileItem, {[`${classes.visible}`]: visible})}
                 >
-                <InsertDriveFile 
-                    className={classNames(classes.fileItemIcon, iconClass)}
-                    />
-                <Typography variant='caption'>{`Orden ${id + 1}`}</Typography>
-                <Typography variant='caption'>{name}</Typography>
+                {Icon()}
+                <Typography variant='caption'>{`Archivo ${id + 1}`}</Typography>
+                <Typography variant='caption' align='center'>{name}</Typography>
                 {(status === 'UPLOADING') && <CircularProgress size={24} className={classes.buttonProgress} />}
             </div>
         )

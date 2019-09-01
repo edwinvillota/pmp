@@ -15,6 +15,8 @@ import UpdateCSV from './components/updateCSVDB'
 import Projects from './components/projectsPage'
 import NewProject from './components/newProject'
 import TestPage from './components/testPage'
+import TransformersDashboard from './components/transformersDashboard'
+import NewTransformersPage from './components/newTransformerPage'
 
 if ( localStorage.jwtToken ) {
   setAuthToken(localStorage.jwtToken)
@@ -44,6 +46,8 @@ class App extends Component {
                 <Route exact path='/projects' component={ Projects } />
                 <Route exact path='/projects/new' component={ NewProject } />
                 <Route exact path='/tools/testPage' component={ TestPage } />
+                <Route exact path='/transformers/dashboard' component={ TransformersDashboard}/>
+                <Route exact path='/transformers/new' component={ NewTransformersPage }/>
               </div>
             </Navbar>
           </div>

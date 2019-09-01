@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
 import UploadCSVButton from './uploadCSVButton'
 import FilesUploader from './filesUploader'
+import OrderDataList from './orderDataList'
 import {
     Grid,
     Paper
@@ -40,7 +41,6 @@ class TestPage extends Component {
     }
 
     handleUploadFile = () => {
-        let url = `${this.props.apiUrl}/api/dbcsv/loadOrder`
         const { filesToUpload } = this.props.filesLoader
         const { socket } = this.state
         this.setState({
@@ -62,13 +62,6 @@ class TestPage extends Component {
             file.index = i
             file.user = this.props.auth.user.CC
             socket.emit('orderPDF', file)
-            // axios.post(url, file)
-            // .then(response => {
-            //     console.log(response)
-            // })
-            // .catch(err => {
-            //     console.log(err)
-            // })
         })
     }
 
@@ -87,15 +80,6 @@ class TestPage extends Component {
             11: 'PAGARE',
             12: 'FINALIZACION'
         }
-        const orders = this.state.results.map((order, index) => {
-            return (
-                <div>
-                    <p>Orden: {order.data[1]['Nro Orden']}</p>
-                    <p>Direccion: {order.data[2]['Direccion']}</p>
-                    <p>Medidor: {order.data[3]['No. Medidor']}</p>
-                </div>
-            )
-        })
 
         return (
         <div className='content'>
@@ -103,7 +87,7 @@ class TestPage extends Component {
                 typeFile='application/pdf'
                 handleUpload={this.handleUploadFile}
                 />
-            {orders}
+            <OrderDataList orders={this.state.results} />
         </div>
         )
     }

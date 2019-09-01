@@ -4,7 +4,7 @@ import setAuthToken from '../setAuthToken'
 import jwt_decode from 'jwt-decode'
 
 export const registerUser = (user, history) => dispatch => {
-    axios.post('http://192.168.150.111:5000/api/users', {newUser: user})
+    axios.post('http://192.168.150.108:5000/api/users', {newUser: user})
             .then(res => history.push('/login'))
             .catch(err => {
                 dispatch({
@@ -15,7 +15,7 @@ export const registerUser = (user, history) => dispatch => {
 }
 
 export const loginUser = (user) => dispatch => {
-    axios.post('http://192.168.150.111:5000/api/users/signin', {user: user})
+    axios.post('http://192.168.150.108:5000/api/users/signin', {user: user})
             .then(res => {
                 const { token } = res.data
                 localStorage.setItem('jwtToken', token)

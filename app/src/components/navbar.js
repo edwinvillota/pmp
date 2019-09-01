@@ -28,7 +28,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import FolderIcon from '@material-ui/icons/Folder'
 import MoreIcon from '@material-ui/icons/MoreHoriz'
-
+import FlashOnIcon from '@material-ui/icons/FlashOn'
 
 const drawerWidth = 240;
 
@@ -182,6 +182,12 @@ class MiniDrawer extends React.Component {
           <ListItem button key='Login'>
             <ListItemIcon><FolderIcon></FolderIcon></ListItemIcon>
             <ListItemText>Contratos</ListItemText>
+          </ListItem>
+        </Link>
+        <Link className="nav-link" to="/transformers/dashboard">
+          <ListItem button key='Balance Energético'>
+            <ListItemIcon><FlashOnIcon/></ListItemIcon>
+            <ListItemText>Balance Energético</ListItemText>
           </ListItem>
         </Link>
       </List>
