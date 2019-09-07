@@ -9,6 +9,7 @@ import projects from './routes/projects.routes'
 import users from './routes/users.routes'
 import appointments from './routes/appointments.routes'
 import dbcsv from './routes/dbcsv.routes'
+import transformers from './routes/transformers.routes'
 // Middlewares imports
 import Auth from './middlewares/authorization'
 // Socket server
@@ -37,6 +38,7 @@ app.use('/api', projects)
 app.use('/api', users)
 app.use('/api', appointments)
 app.use('/api', dbcsv)
+app.use('/api', transformers)
 app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`)
 })

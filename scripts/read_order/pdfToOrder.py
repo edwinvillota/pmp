@@ -9,8 +9,8 @@ import sys
 
 def PDF_To_Order (scriptPath, pdfPath, index):
 
-    with Img(filename=pdfPath, resolution=300) as img:
-        img.compression_quality = 99
+    with Img(filename=pdfPath, resolution=600) as img:
+        img.compression_quality = 100
         img.save(filename='./act.jpg')
 
     # Prepare images

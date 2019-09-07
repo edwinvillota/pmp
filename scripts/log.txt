@@ -1,17 +1,6 @@
-No es atributo: TUMACO
-No es atributo: BIFILAR | 1Fase 2 Hilos
-No es atributo: y
-No es atributo: W
-No es atributo: medidor energizado con carga directa se reubica
-No es atributo: acometida y se normaliza, se toman fotos de
-No es atributo: acometida después en foto anexos y prueba de fuga.
-No es atributo: Cond
-No es atributo: Cond
-No es atributo: y
-No es atributo: Hora
-No es atributo: TECNI
-No es atributo: Nombr
-No es atributo: Cedul
-No es atributo: Lugar
-No es atributo: Uta
-No es atributo: co
+No es atributo: PRUEBA DE ARRANQUE (1<01A)
+No es atributo: BIFILAR | lase ¿Hilos
+No es atributo: REALIZA REVISION INTEGRAL DONDE SE VALIDAN PRUEBAS
+No es atributo: AL EQUIPO DE MEDIDA EL CUAL SE ENCUENTRA EN BUEN
+No es atributo: ESTADO, SE DETECTO BORNERA EN HD FLOJA SE DEJA
+No es atributo: AJUSTADA.

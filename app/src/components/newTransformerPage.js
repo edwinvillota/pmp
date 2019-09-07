@@ -14,7 +14,8 @@ import {
     FormControl,
     InputLabel,
     Select,
-    FilledInput
+    FilledInput,
+    OutlinedInput
 } from '@material-ui/core'
 import {
     setFileStatus,
@@ -23,7 +24,8 @@ import {
 import axios from 'axios'
 import FilesUploader from './filesUploader'
 import * as XLSX from 'xlsx'
-import CustomTable from './customTable'
+import TransformerUsersTable from './trasformerUsersTable'
+import PaginationTable from './paginationTable'
 
 const styles = theme => ({
     root: {
@@ -55,10 +57,13 @@ class NewTransformerPage extends Component {
     }
 
     handleSendTransformer = e => {
-        const { structure } = this.state 
+        const { structure, users } = this.state 
         const endpoint = `${this.props.apiUrl}/api/transformers`
 
-        axios.post(endpoint, {structure: structure})
+        axios.post(endpoint, {
+            structure: structure,
+            users: users
+        })
             .then(json => {
                 console.log(json)
             }).catch(err => {
@@ -90,7 +95,7 @@ class NewTransformerPage extends Component {
             const wb = XLSX.read(reader.result, {type: 'binary'})
             const wsname = wb.SheetNames[0]
             const ws = wb.Sheets[wsname]
-            const data = XLSX.utils.sheet_to_csv(ws, {header:1})
+            const data = XLSX.utils.sheet_to_json(ws, {header:2})
             this.props.setFileStatus(0, 'SUCCESS')
             this.props.setLoaderStatus('SUCCESS')
             this.setState({
@@ -125,20 +130,22 @@ class NewTransformerPage extends Component {
                                         <TextField fullWidth
                                             id='structure'
                                             label='Estructura'
-                                            variant='filled'
+                                            variant='outlined'
                                             onKeyUp={(e) => {e.target.value = e.target.value.toUpperCase()}}
                                             onChange={this.handleChange('structure')}
                                             />
                                     </Grid>
                                     <Grid item xs={4} className={classes.formItem}>
-                                        <FormControl variant='filled' fullWidth>
-                                            <InputLabel>
+                                        <FormControl variant='outlined' fullWidth>
+                                            <InputLabel
+                                                style={{backgroundColor: 'white'}}
+                                                >
                                                 Municipio
                                             </InputLabel>
                                             <Select
                                                 native
                                                 input={
-                                                    <FilledInput
+                                                    <OutlinedInput
                                                         name='Municipio'
                                                     />
                                                 }
@@ -157,7 +164,7 @@ class NewTransformerPage extends Component {
                                             type='number'
                                             id='macromedidor'
                                             label='Macromedidor'
-                                            variant='filled'
+                                            variant='outlined'
                                             onChange={this.handleChange('structure')}
                                             />
                                     </Grid>
@@ -167,7 +174,7 @@ class NewTransformerPage extends Component {
                                             type='number'
                                             id='Kva'
                                             label='Kva'
-                                            variant='filled'
+                                            variant='outlined'
                                             onChange={this.handleChange('structure')}
                                             />
                                     </Grid>
@@ -177,7 +184,7 @@ class NewTransformerPage extends Component {
                                             type='number'
                                             id='ratio'
                                             label='Ratio'
-                                            variant='filled'
+                                            variant='outlined'
                                             onChange={this.handleChange('structure')}
                                             />
                                     </Grid>
@@ -196,7 +203,22 @@ class NewTransformerPage extends Component {
                                 />
                         </Grid>
                         <Grid item xs={12}>
-                            <Typography>{users}</Typography>
+                            {
+                                users.length ? (
+                                    <PaginationTable users={users}/>
+                                    // <TransformerUsersTable users={users} />
+                                ) : null
+                            }
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                variant='outlined'
+                                color='secondary'
+                                fullWidth
+                                onClick={this.handleSendTransformer}
+                            >
+                                Crear Transformador
+                            </Button>
                         </Grid>
                     </Paper>
                 </Grid>
