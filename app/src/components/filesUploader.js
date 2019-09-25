@@ -142,7 +142,8 @@ class FilesUploader extends Component {
         Array.from(files).forEach((file, i) => {
             let fileReader = new FileReader()
             fileReader.onload = () => {
-               this.props.addFileToUpload(`${file.name}`, fileReader.result)
+                this.props.setLoaderStatus('WAITING')
+                this.props.addFileToUpload(`${file.name}`, fileReader.result)
             }
             fileReader.readAsDataURL(file)
         })
@@ -183,6 +184,7 @@ class FilesUploader extends Component {
             if (!multiple && i > 0) return false
             let fileReader = new FileReader()
             fileReader.onload = () => {
+                this.props.setLoaderStatus('WAITING')
                 this.props.addFileToUpload(`${file.name}`, fileReader.result)
             }
             fileReader.readAsDataURL(file)
@@ -244,7 +246,7 @@ class FilesUploader extends Component {
                             <Typography
                                 variant='caption' 
                                 className={classes.dropAreaText}>
-                                {(filesToUpload.length == 0) ? 'Arratre su archivos aqui.' : false}
+                                {(filesToUpload.length == 0) ? 'Arratre su archivo aqui.' : false}
                             </Typography>
                             {fileItems}
                         </Grid>
@@ -255,7 +257,7 @@ class FilesUploader extends Component {
                             color='primary'
                             className={classNames(buttonClassName, classes.button)} 
                             onClick={this.handleUploadFiles}
-                            disabled={(status === 'UPLOADING')}
+                            disabled={(status === 'UPLOADING' || status === 'EMPTY')}
                             >
                                 Cargar
                             {(status === 'UPLOADING') && <CircularProgress size={24} className={classes.buttonProgress} />}

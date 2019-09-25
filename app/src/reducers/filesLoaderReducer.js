@@ -9,7 +9,7 @@ import {
 
 const initialState = {
     filesToUpload: [],
-    status: 'WAITING'
+    status: 'EMPTY'
 }
 
 export default function (state = initialState, action) {
@@ -46,7 +46,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 filesToUpload: [],
-                status: 'WAITING'
+                status: 'EMPTY'
             }
         case UPLOAD_FILE: 
             return Object.assign({}, state, {

@@ -5,8 +5,23 @@ import TransformerUser from '../models/transformerUser'
 const TransformerController = {}
 
 TransformerController.addTransformer = async (req, res) => {
-    let newTransformer = new Transformer({structure: req.body.structure})
-    const users = req.body.users
+    const { 
+        structure,
+        town,
+        macro,
+        kva,
+        ratio,
+        users
+     } = req.body
+    let newTransformer = new Transformer(
+        {
+            structure: structure,
+            town: town,
+            macro: macro,
+            kva: kva,
+            ratio
+        }
+    )
 
     newTransformer.save((err, transformer) => {
         if (err) console.log(err)
