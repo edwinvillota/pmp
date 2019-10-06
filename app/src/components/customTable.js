@@ -31,9 +31,6 @@ class CustomTable extends Component {
             }
             tableRows = rows.map((r, k) => {
                 const cells = headers.map((h, i) => {
-                    console.log(r)
-                    // console.log(h)
-                    // console.log(r[h])
                     return (
                         <td key={i}>{r[h]}</td>
                     )

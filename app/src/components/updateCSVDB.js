@@ -13,8 +13,10 @@ import {
 	Avatar,
 	ButtonBase
 } from '@material-ui/core'
+import {setLoaderStatus, setFileStatus} from '../actions/filesLoader'
 import socketClient from 'socket.io-client'
 import UploadCSVButton from './uploadCSVButton'
+import FilesUploader from './filesUploader'
 
 const styles = theme => ({
     root: {
@@ -59,19 +61,8 @@ class UpdateCSVDB extends Component {
     super()
 	this.state = {	
 			socket: false,
-			uaProgress: 0,
-			uaTotal: 0,
-			uaLoad: false,
-			uamessage: '',
-			uamessageV: false,
-			uasUpdate: 0,
-			lecProgress: 0,
-			lecTotal: 0,
-			lecLoad: false,
-			lecmessage: '',
-			lecmessageV: false,
-			lecsUpdate: 0,
-			fileType: false
+			fileLoaded: false,
+			fileType: ''
 		}
 	}
 
@@ -85,214 +76,81 @@ class UpdateCSVDB extends Component {
 		})
 	}
 
-	handleUpdateUA = () => {
-		const {socket} = this.state 
-		this.setState({
-			uaProgress: 0,
-			uaTotal: 0,
-			uaLoad: false,
-			uamessage: '',
-			uamessageV: false,
-			uasUpdate: 0
-		})
+	dataURItoBlob = (dataURI) => {
+        let byteString = atob(dataURI.split(',')[1]);
+        let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+        let ab = new ArrayBuffer(byteString.length);
+        let ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        let blob = new Blob([ab], {type: mimeString});
+        return blob;
+    }
 
-		let url = `${this.props.apiUrl}/api/dbcsv/updateCSVUA`
-
-		axios.post(url)
+	handleLoadFile = e => {
+		const { filesToUpload } = this.props.filesLoader
+		const endpoint = `${this.props.apiUrl}/api/dbcsv/loadCSV`
+		const base64 = filesToUpload[0].file
+		const blob = this.dataURItoBlob(base64)
+		const formData = new FormData()
+		formData.append('file', blob)
+		axios.post(endpoint, formData)
 			.then(json => {
-				const data = json.data
-				this.setState({
-					uaLoad: true,
-					uamessageV: true,
-					uaTotal: data.records
-				})
-				socket.on('uProgress', data => {
+				if (json.statusText === 'OK') {
+					this.props.setFileStatus(0, 'SUCCESS')
+					this.props.setLoaderStatus('SUCCESS')
 					this.setState({
-						uaProgress: (data * 100 / this.state.uaTotal),
-						uasUpdate: data,
-						uamessage: `Se han actualizado ${data} usuarios de ${this.state.uaTotal}`
+						fileLoaded: true,
+						fileType: json.data.name
 					})
-					if (data === this.state.uaTotal) {
-						socket.removeAllListeners('uProgress')
-					}
-				})
-			})
-			.catch(err => {
-				this.setState({
-					uaProgress: false,
-					uaLoad: false,
-					uamessage: err,
-					uamessageV: true
-				})
-			})
-	}
-
-	handleUpdateLEC = () => {
-		const {socket} = this.state
-		this.setState({
-			lecProgress: 0,
-			lecTotal: 0,
-			lecLoad: false,
-			lecmessage: '',
-			lecmessageV: false,
-			lecsUpdate: 0,
-		})
-
-		let url = `${this.props.apiUrl}/api/dbcsv/updateCSVLEC`
-
-		axios.post(url)
-			.then(json => {
-				const data = json.data
-				this.setState({
-					lecLoad: true,
-					lecmessageV: true,
-					lecTotal: data.records
-				})
-				socket.on('uProgress', data => {
-					this.setState({
-						lecProgress: (data * 100 / this.state.lecTotal),
-						lecsUpdate: data,
-						lecmessage: `Se han actualizado ${data} lecturas de ${this.state.lecTotal}`
-					})
-					if (data === this.state.lecTotal) {
-						socket.removeAllListeners('uProgress')
-					}
-				})
-			})
-			.catch(err => {
-				this.setState({
-					lecProgress: false,
-					lecLoad: false,
-					lecmessage: err,
-					lecmessageV: true
-				})
-			})
-	}
-
-	handleUploadFile = file => {
-		let data = new FormData()
-		let url = `${this.props.apiUrl}/api/dbcsv/loadCSV`
-		data.append('file', file)
-
-		axios.post(url, data, {
-			headers: {'Content-Type': 'multipart/form-data'}
-		})
-			.then(response => {
-				this.setState({
-					fileType: response.data
-				})
-			})
-			.catch(err => {
+				}
+			}).catch(err => {
 				console.log(err)
 			})
 	}
 
-  render() {
+	render() {
 		const { classes } = this.props
-		let { socket,
-					lecProgress, 
-					uaProgress,
-					uaLoad,
-					uamessage,
-					uamessageV,
-					lecLoad,
-					lecmessage,
-					lecmessageV,
-				} = this.state
-
-		let uamClasses
-
-		if (uaLoad) {
-			uamClasses = classNames({
-				[classes.margin]: true,
-				[classes.hide]: !uamessageV
-			})
-		} 
-		else {
-			uamClasses = classNames({
-				[classes.margin]: true,
-				[classes.hide]: !uamessageV,
-				[classes.error]: true
-			})
-		}
-
-		let lecmClasses
-
-		if (lecLoad) {
-			lecmClasses = classNames({
-				[classes.margin]: true,
-				[classes.hide]: !lecmessageV
-			})
-		} 
-		else {
-			lecmClasses = classNames({
-				[classes.margin]: true,
-				[classes.hide]: !lecmessageV,
-				[classes.error]: true
-			})
-		}
-
-		
-				
-    return(
-      <div className='content'>
-			<Grid container spacing={8}>
-				<Grid item xs={12}>
-					<Typography variant="h4" component="h4" align='center'>
-              			Actualización de bases de datos
-            		</Typography>
-					<Chip
-						avatar={
-						<Avatar
+		const { socket, fileLoaded, fileType } = this.state
+					
+		return(
+		<div className='content'>
+				<Grid container spacing={8}>
+					<Grid item xs={12}>
+						<Typography variant="h4" component="h4" align='center'>
+							Actualización de bases de datos
+						</Typography>
+						<Chip
+							avatar={
+							<Avatar
+								className = {classNames({
+									[classes.connected] : socket
+								})}
+							>WS
+							</Avatar>
+							}
+							label='WebSocket'
 							className = {classNames({
-								[classes.connected] : socket
+								[classes.chip]: true,
 							})}
-						>WS
-						</Avatar>
+						/>
+					</Grid>
+					<Grid item xs={12}>
+						<FilesUploader
+							typeFile='text/csv'
+							icon='List'
+							multiple={false}
+							handleUpload={this.handleLoadFile}
+						/>
+						{
+							fileLoaded ? <Typography variant='caption'>{`Se ha cargado un archivo de tipo: ${fileType}`}</Typography> : null
 						}
-						label='WebSocket'
-						className = {classNames({
-							[classes.chip]: true,
-						})}
-					/>
+					</Grid>
 				</Grid>
-				<Grid item xs={6}>
-					<Button
-						variant="contained"
-						color="primary"
-						className={classes.button}
-						onClick={this.handleUpdateUA}
-						>
-						Actualizar Usuarios Asociados 
-					</Button>
-					<LinearProgress className={`${classes.margin} ${uaProgress ? '' : classes.hide}`} variant='determinate' value={uaProgress} />
-					<Typography variant="caption" align='center' gutterBottom className={uamClasses}>
-						{uamessage}
-					</Typography>
-				</Grid>
-				<Grid item xs={6}>
-					<Button
-						variant="contained"
-						color="secondary"
-						className={classes.button}
-						onClick={this.handleUpdateLEC}
-						>
-						Actualizar Lecturas
-					</Button>
-					<LinearProgress className={`${classes.margin} ${lecProgress ? '' : classes.hide}`} color='secondary' variant='determinate' value={lecProgress}/>
-					<Typography variant="caption" align='center' gutterBottom className={lecmClasses}>
-						{lecmessage}
-					</Typography>
-				</Grid>
-				<UploadCSVButton 
-					handleUpload={this.handleUploadFile}
-					fileType={this.state.fileType}
-					/>
-			</Grid>
-				
-      </div>
-    )
-  }
+		</div>
+		)
+	}
 }
 
 UpdateCSVDB.propTypes = {
@@ -300,7 +158,17 @@ UpdateCSVDB.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-	apiUrl: state.api.apiUrl
+    apiUrl: state.api.apiUrl,
+    filesLoader: state.filesLoader
 })
 
-export default withStyles(styles)(connect(mapStateToProps)(UpdateCSVDB))
+const mapDispatchToProps = dispath => ({
+    setFileStatus: (index, newStatus) => {
+        dispath(setFileStatus(index, newStatus))
+    },
+    setLoaderStatus: (newStatus) => {
+        dispath(setLoaderStatus(newStatus))
+    }
+})
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UpdateCSVDB))

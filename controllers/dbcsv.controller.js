@@ -18,22 +18,20 @@ DbcsvController.CSVTypes = [
     id: 1,
     name: 'Usuarios Asociados',
     headers: [ 
-      'codigo de transformador',
-      'capacidadtransformador',
-      'georeferencia',
-      'tipotransformador',
+      'ï»¿"Codigo de Transformador"',
+      'CapacidadTransformador',
+      'Georeferencia',
+      'TipoTransformador',
       'direccion',
-      'codigo nodo',
-      'codigo usuario',
-      'tipousuario',
-      'codigo concentrador',
-      'codigo de caja',
-      'codigo de colector',
-      'codigo de medidor',
-      'display',
-      'estado',
-      'limite',
-      'estado servicio' 
+      'Codigo Nodo',
+      'Codigo Usuario',
+      'TipoUsuario',
+      'Codigo Concentrador',
+      'Codigo de Caja',
+      'Codigo de Colector',
+      'Codigo de Medidor',
+      'Display',
+      'Estado',
     ],
     ignore: /(id_colector|transformador|capacidad|tipotransformador|direccion|nodo|estado)/,
     keys: [
@@ -52,20 +50,19 @@ DbcsvController.CSVTypes = [
       'medidor',
       'homedisplay',
       'estado',
-      'limite',
-      'servicio'
     ] 
   },
   {
     id: 2,
     name: 'Lecturas',
     headers: [ 
-      'codigo usuario',
-      'codigo medidor',
-      'fecha consulta',
-      'fecha lectura',
-      'lectura final',
-      'anomalia' 
+      'ï»¿"Codigo Usuario"',
+      'Medidor',
+      'Fecha Consulta',
+      'Fecha de Lectura',
+      'Lectura Activa',
+      'Lectura Reactiva',
+      'Anomalia' 
     ],
     ignore: false,
     keys: [
@@ -73,7 +70,8 @@ DbcsvController.CSVTypes = [
       'medidor',
       'fecha_consulta',
       'fecha_lectura',
-      'lectura',
+      'lectura_activa',
+      'lectura_reactiva',
       'anomalia'
     ]
   },

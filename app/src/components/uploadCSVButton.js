@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
@@ -7,6 +8,7 @@ import {
     Button,
     Typography
 } from '@material-ui/core'
+import {setFileStatus, setLoaderStatus} from '../actions/filesLoader'
 import CustomTable from './customTable'
 
 const styles = theme => ({
@@ -179,4 +181,18 @@ UploadCSVButton.propTypes = {
     classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(UploadCSVButton)
+const mapStateToProps = (state) => ({
+    apiUrl: state.apiUrl,
+    filesLoader: state.filesLoader
+})
+
+const mapDispatchToProps = dispath => ({
+    setFileStatus: (index, newStatus) => {
+        dispath(setFileStatus(index, newStatus))
+    },
+    setLoaderStatus: (newStatus) => {
+        dispath(setLoaderStatus(newStatus))
+    }
+})
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(UploadCSVButton))

@@ -84,7 +84,7 @@ const styles = theme => ({
         transition: 'color .5s ease-in'
     },
     fileItemIconLoaded: {
-        color: '#10AFD6',
+        color: '#878787',
         fontSize: '3em'
     },
     fileItemIconUploading: {
