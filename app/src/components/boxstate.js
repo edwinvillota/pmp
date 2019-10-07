@@ -350,7 +350,7 @@ class BoxState extends Component {
                     <TableCell >{u.tipo}</TableCell>
                     <TableCell numeric>{u.medidor}</TableCell>
                     <TableCell numeric>{u.homedisplay}</TableCell>
-                    <TableCell numeric>{u.lecturas[0].lectura}</TableCell>
+                    <TableCell numeric>{u.lecturas[0].lectura_activa}</TableCell>
                     <TableCell >{novainfo.direccion.toLowerCase()}</TableCell>
                     <TableCell >{u.servicio}</TableCell>
                     <TableCell >{u.lecturas[0].anomalia}</TableCell>

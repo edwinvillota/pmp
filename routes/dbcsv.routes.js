@@ -39,4 +39,13 @@ router.post('/dbcsv/loadOrder', (req, res) => {
   Dbcsv.PDFToOrder(req, res)
 })
 
+// Agregar usuario asociado
+router.post('/dbcsv/addUA', (req, res) => {
+  Dbcsv.addUA(req,res)
+})
+
+// Agregar Lectura 
+router.post('/dbcsv/addLEC', (req, res) => {
+  Dbcsv.addLEC(req,res)
+})
 export default router

@@ -33,6 +33,22 @@ emitters.ordersData = async (socket, data) => {
     }
 }
 
+emitters.uploadCSVStatus = async (socket, data) => {
+    try {
+        socket.emit('uploadCSVStatus', data) 
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+emitters.recordsCSVStatus = async (socket, data) => {
+    try {
+        socket.emit('recordsCSVStatus', data)
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 socket.on('connection', socket => {
     console.log('cliente conectado')
     socket.on('orderPDF', function (file) {

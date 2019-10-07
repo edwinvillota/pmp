@@ -8,6 +8,7 @@ import { socket, emitters } from '../controllers/socket.controller'
 import Formidable from 'formidable'
 import FileReader from 'filereader'
 import fs from 'fs'
+import { ENOMEM } from 'constants'
 const amqp = require('amqplib/callback_api')
 const path = require('path')
 
@@ -77,6 +78,110 @@ DbcsvController.CSVTypes = [
   },
 ]
 
+DbcsvController.addUA = async (req, res) => {
+  let form = new Formidable.IncomingForm()
+  const headers = ['transformador','capacidad','georeferencia','tipotransformador','direccion','nodo','usuario','tipo','concentrador','caja','colector','medidor','homedisplay','estado']
+  const ignore = /(transformador|capacidad|tipotransformador|direccion|nodo|estado)/
+  form.parse(req,(err, fields, files) => {
+  })
+  form.on('file', async (name, file) => {
+    const csv = await DbcsvController.fileToCSV(file, headers, ignore)
+    const totalRecords = csv.length
+    emitters.uploadCSVStatus(socket, 'DROP DATABASE...')
+    mongoose.connection.db.dropCollection('csvuas', (err, result) => {
+      if (err) {
+        result.err = 'Error: Drop collections'
+        res.status(500).send(JSON.stringify(result))
+      } else {
+        emitters.uploadCSVStatus(socket, 'UPLOADING...')
+        console.log('Sucessfull: Collections droped')
+      }
+    })
+    let totalCount = 0
+    let successCount = 0
+    let errorCount = 0
+    let interval = setInterval(() => {
+      emitters.recordsCSVStatus(socket, {OK: successCount, Error: errorCount, Pending: totalRecords - successCount})
+    }, 500)
+    csv.forEach(u => {
+      let newU = new CSVUA(u)
+      newU.save((err, saved) => {
+        if (err) {
+          errorCount += 1
+          totalCount += 1
+          console.log(err)
+        } else {
+          successCount += 1
+          totalCount += 1
+          if (totalRecords === totalCount) {
+            clearInterval(interval)
+            emitters.recordsCSVStatus(socket, {OK: successCount, Error: errorCount, Pending: totalRecords - totalCount})
+            emitters.uploadCSVStatus(socket, 'SUCCESS...')
+            console.log('Success csvuas updated')
+            res.status(200).json({status: 'Success', message: 'Data base update'})
+          }
+        }
+      })
+    })
+  })
+}
+
+DbcsvController.addLEC = async (req, res) => {
+  let form = new Formidable.IncomingForm()
+  const headers = ['usuario','medidor','fecha_consulta','fecha_lectura','lectura_activa','lectura_reactiva','anomalia']
+  form.parse(req,(err, fields, files) => {
+  })
+  form.on('file', async (name, file) => {
+    const csv = await DbcsvController.fileToCSV(file, headers)
+    const totalRecords = csv.length
+    emitters.uploadCSVStatus(socket, 'DROP DATABASE...')
+    mongoose.connection.db.dropCollection('csvlecs', (err, result) => {
+      if (err) {
+        let result = {}
+        result.err = 'Error: Drop collections'
+        res.status(500).json(result)
+      } else {
+        emitters.uploadCSVStatus(socket, 'UPLOADING...')
+        console.log('Sucessfull: Collections Droped')
+      }
+    })
+    let totalCount = 0
+    let successCount = 0
+    let errorCount = 0
+    let interval = setInterval(() => {
+      emitters.recordsCSVStatus(socket, {
+        OK: successCount,
+        Error: errorCount,
+        Pending: totalRecords - successCount
+      })
+    }, 500)
+    csv.forEach(u => {
+      let newU = new CSVLEC(u)
+      newU.save((err, saved) => {
+        if (err) {
+          errorCount += 1
+          totalCount += 1
+          console.log(err)
+        } else {
+          successCount += 1
+          totalCount += 1
+          if (totalRecords === totalCount) {
+            clearInterval(interval)
+            emitters.recordsCSVStatus(socket, {
+              OK: successCount,
+              Error: errorCount,
+              Pending: totalRecords - totalCount
+            })
+            emitters.uploadCSVStatus(socket, 'SUCCESS...')
+            console.log('Success: csvlecs update')
+            res.status(200).json({status: 'Success', message: 'Data base update'})
+          }
+        }
+      })
+    })
+  })
+}
+
 DbcsvController.updateCSVUA = async (req, res) => {
   let result = {
     ok: true,
@@ -94,8 +199,8 @@ DbcsvController.updateCSVUA = async (req, res) => {
   .then(response => {
     csv2json({
       ignoreEmpty: true,
-      ignoreColumns: /(id_colector|transformador|capacidad|tipotransformador|direccion|nodo|estado)/,
-      headers: ['id_colector','transformador','capacidad','georeferencia','tipotransformador','direccion','nodo','usuario','tipo','concentrador','caja','colector','medidor','homedisplay','estado','limite','servicio'],
+      ignoreColumns: /(transformador|capacidad|tipotransformador|direccion|nodo|estado)/,
+      headers: ['transformador','capacidad','georeferencia','tipotransformador','direccion','nodo','usuario','tipo','concentrador','caja','colector','medidor','homedisplay','estado'],
       checkType: true
     })
     .fromString(response.data)

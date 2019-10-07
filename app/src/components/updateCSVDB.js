@@ -11,12 +11,14 @@ import {
 	LinearProgress,
 	Chip,
 	Avatar,
-	ButtonBase
+	ButtonBase,
+	Grow
 } from '@material-ui/core'
 import {setLoaderStatus, setFileStatus} from '../actions/filesLoader'
 import socketClient from 'socket.io-client'
 import UploadCSVButton from './uploadCSVButton'
 import FilesUploader from './filesUploader'
+import UpdateCSVInfo from './updateCSVInfo'
 
 const styles = theme => ({
     root: {
@@ -62,7 +64,14 @@ class UpdateCSVDB extends Component {
 	this.state = {	
 			socket: false,
 			fileLoaded: false,
-			fileType: ''
+			fileType: '',
+			dataLoaded: [],
+			uploadStatus: 'WAITING...',
+			dataStatus: {
+				OK: 0,
+				Pending: 0,
+				Error: 0
+			}
 		}
 	}
 
@@ -72,6 +81,16 @@ class UpdateCSVDB extends Component {
 		socket.on('connect', () => {
 			this.setState({
 				socket: socket
+			})
+		})
+		socket.on('uploadCSVStatus', (status) => {
+			this.setState({
+				uploadStatus: status
+			})
+		})
+		socket.on('recordsCSVStatus', (status) => {
+			this.setState({
+				dataStatus: status
 			})
 		})
 	}
@@ -102,7 +121,13 @@ class UpdateCSVDB extends Component {
 					this.props.setLoaderStatus('SUCCESS')
 					this.setState({
 						fileLoaded: true,
-						fileType: json.data.name
+						fileType: json.data.name,
+						dataLoaded: json.data.data,
+						dataStatus: {
+							OK: 0,
+							Pending: json.data.data.length,
+							Error: 0
+						}
 					})
 				}
 			}).catch(err => {
@@ -110,16 +135,40 @@ class UpdateCSVDB extends Component {
 			})
 	}
 
+	handleUploadRecords = async () => {
+		const {dataLoaded, dataStatus, fileType} = this.state 
+		let endpoint = `${this.props.apiUrl}`
+		if (fileType === 'Usuarios Asociados') {
+			endpoint += '/api/dbcsv/addUA' 
+		} else if (fileType === 'Lecturas') {
+			endpoint += '/api/dbcsv/addLEC'
+		} else {
+			alert('Este tipo de archivo no tiene metodo de carga')
+			return
+		}
+		const blob = this.dataURItoBlob(this.props.filesLoader.filesToUpload[0].file)
+		const formData = new FormData()
+		formData.append('file', blob)
+		axios.post(endpoint, formData)
+			.then(json => {
+				console.log(json)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+
 	render() {
 		const { classes } = this.props
-		const { socket, fileLoaded, fileType } = this.state
+		const { socket, fileLoaded, fileType, dataLoaded, dataStatus, uploadStatus } = this.state
+		const filesLoaderStatus = this.props.filesLoader.status
 					
 		return(
 		<div className='content'>
 				<Grid container spacing={8}>
 					<Grid item xs={12}>
 						<Typography variant="h4" component="h4" align='center'>
-							Actualización de bases de datos
+							ACTUALIZAR BASES DE DATOS
 						</Typography>
 						<Chip
 							avatar={
@@ -144,9 +193,19 @@ class UpdateCSVDB extends Component {
 							handleUpload={this.handleLoadFile}
 						/>
 						{
-							fileLoaded ? <Typography variant='caption'>{`Se ha cargado un archivo de tipo: ${fileType}`}</Typography> : null
+							fileLoaded && filesLoaderStatus === 'SUCCESS' ? <Typography align='center' variant='caption'>{`Se ha cargado un archivo de tipo: ${fileType} con ${dataLoaded.length} registros`}</Typography> : null
 						}
 					</Grid>
+					<Grow in={fileLoaded && filesLoaderStatus === 'SUCCESS'}>
+						<Grid item xs={12}>
+							<UpdateCSVInfo 
+								fileType = {fileType}
+								dataStatus={dataStatus}
+								uploadStatus={uploadStatus}
+								handleUploadRecords={this.handleUploadRecords}
+								/>
+						</Grid>
+					</Grow>
 				</Grid>
 		</div>
 		)

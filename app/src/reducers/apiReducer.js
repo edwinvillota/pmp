@@ -1,7 +1,7 @@
 import { GET_API_URL } from '../actions/types'
 
 const initialState = {
-    apiUrl: 'http://192.168.150.107:5000'
+    apiUrl: 'http://181.62.161.186:5000'
 }
 
 export default function (state = initialState, action) {
