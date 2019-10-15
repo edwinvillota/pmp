@@ -7,18 +7,16 @@ import { withStyles } from '@material-ui/core/styles'
 import {
     Typography,
     Grid,
-	Button,
-	LinearProgress,
 	Chip,
 	Avatar,
-	ButtonBase,
-	Grow
+	Grow,
 } from '@material-ui/core'
 import {setLoaderStatus, setFileStatus} from '../actions/filesLoader'
 import socketClient from 'socket.io-client'
-import UploadCSVButton from './uploadCSVButton'
 import FilesUploader from './filesUploader'
 import UpdateCSVInfo from './updateCSVInfo'
+import LecAnalysis from './lecAnalysis'
+import moment from 'moment'
 
 const styles = theme => ({
     root: {
@@ -71,6 +69,16 @@ class UpdateCSVDB extends Component {
 				OK: 0,
 				Pending: 0,
 				Error: 0
+			},
+			lectureStatus: {
+				mec: {
+					online: 0,
+					offline: 0
+				},
+				mit: {
+					online: 0,
+					offline: 0
+				}
 			}
 		}
 	}
@@ -129,13 +137,90 @@ class UpdateCSVDB extends Component {
 							Error: 0
 						}
 					})
+					this.handleLecturesAnalysis()
 				}
 			}).catch(err => {
 				console.log(err)
 			})
 	}
 
+	handleLecturesAnalysis = () => {
+		const { dataLoaded } = this.state
+		let lectureStatus = {
+			mec: {
+				online: 0,
+				offline: 0
+			},
+			mit: {
+				online: 0,
+				offline: 0
+			}
+		}
+		const MITUsers = dataLoaded.filter(lec => (typeof lec.Medidor === 'string'))
+		const MECUsers = dataLoaded.filter(lec => (typeof lec.Medidor === 'number'))
+
+		MITUsers.forEach(lec => {
+			if (lec['Lectura Activa'] > 0) {
+				lectureStatus.mit.online += 1
+			} else {
+				lectureStatus.mit.offline += 1
+			}
+		})
+
+		MECUsers.forEach(lec => {
+			if (lec['Lectura Activa'] > 0) {
+				lectureStatus.mec.online += 1
+			} else {
+				lectureStatus.mec.offline += 1
+			}
+		})
+		this.setState({
+			lectureStatus: lectureStatus
+		})
+	}
+
+	registerLectureStatus = () => {
+		const endpoint = `${this.props.apiUrl}/api/analysis/addLecStatus`
+		const { lectureStatus, dataLoaded } = this.state
+		const requestDate = dataLoaded[0]['Fecha Consulta']
+		const lectureDate = moment(requestDate, "DD/MM/YYYY")
+		const MecStatus = {
+			tipo_medida: 'MEC',
+			fecha_estado: lectureDate,
+			fecha_registro: Date.now(),
+			total_usuarios: lectureStatus.mec.online + lectureStatus.mec.offline,
+			usuarios_online: lectureStatus.mec.online,
+			usuarios_offline: lectureStatus.mec.offline
+		}
+
+		const MitStatus = {
+			tipo_medida: 'MIT',
+			fecha_estado: lectureDate,
+			fecha_registro: Date.now(),
+			total_usuarios: lectureStatus.mit.online + lectureStatus.mit.offline,
+			usuarios_online: lectureStatus.mit.online,
+			usuarios_offline: lectureStatus.mit.offline
+		}
+
+		axios.post(endpoint, {LecStatus: MecStatus})
+			.then(response => {
+				console.log(response)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+
+		axios.post(endpoint, {LecStatus: MitStatus})
+			.then(response => {
+				console.log(response)
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+
 	handleUploadRecords = async () => {
+		this.registerLectureStatus()
 		const {dataLoaded, dataStatus, fileType} = this.state 
 		let endpoint = `${this.props.apiUrl}`
 		if (fileType === 'Usuarios Asociados') {
@@ -204,6 +289,11 @@ class UpdateCSVDB extends Component {
 								uploadStatus={uploadStatus}
 								handleUploadRecords={this.handleUploadRecords}
 								/>
+						</Grid>
+					</Grow>
+					<Grow in={fileLoaded && filesLoaderStatus === 'SUCCESS' && fileType === 'Lecturas'}>
+						<Grid item xs={12}>
+							<LecAnalysis lecStatus={this.state.lectureStatus}/>
 						</Grid>
 					</Grow>
 				</Grid>

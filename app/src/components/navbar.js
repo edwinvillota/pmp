@@ -29,6 +29,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import FolderIcon from '@material-ui/icons/Folder'
 import MoreIcon from '@material-ui/icons/MoreHoriz'
 import FlashOnIcon from '@material-ui/icons/FlashOn'
+import HomeIcon from '@material-ui/icons/Home'
 
 const drawerWidth = 240;
 
@@ -143,6 +144,12 @@ class MiniDrawer extends React.Component {
           <ListItemIcon><PersonIcon></PersonIcon></ListItemIcon>
           <ListItemText>{user.name}</ListItemText>
         </ListItem>
+        <Link className="nav-link" to="/">
+          <ListItem button key='Home'>
+            <ListItemIcon><HomeIcon/></ListItemIcon>
+            <ListItemText>Inicio</ListItemText>
+          </ListItem>
+        </Link>
         <ListItem button onClick={this.handleToolsExpand}>
           <ListItemIcon>
             <BuildIcon />
