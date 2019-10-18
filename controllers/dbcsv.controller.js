@@ -33,6 +33,7 @@ DbcsvController.CSVTypes = [
       'Codigo de Medidor',
       'Display',
       'Estado',
+      'Relay'
     ],
     ignore: /(id_colector|transformador|capacidad|tipotransformador|direccion|nodo|estado)/,
     keys: [
@@ -51,6 +52,7 @@ DbcsvController.CSVTypes = [
       'medidor',
       'homedisplay',
       'estado',
+      'relay'
     ] 
   },
   {
@@ -80,7 +82,7 @@ DbcsvController.CSVTypes = [
 
 DbcsvController.addUA = async (req, res) => {
   let form = new Formidable.IncomingForm()
-  const headers = ['transformador','capacidad','georeferencia','tipotransformador','direccion','nodo','usuario','tipo','concentrador','caja','colector','medidor','homedisplay','estado']
+  const headers = ['transformador','capacidad','georeferencia','tipotransformador','direccion','nodo','usuario','tipo','concentrador','caja','colector','medidor','homedisplay','estado','relay']
   const ignore = /(transformador|capacidad|tipotransformador|direccion|nodo|estado)/
   form.parse(req,(err, fields, files) => {
   })
@@ -280,7 +282,7 @@ DbcsvController.getBoxState = async (req, res) => {
           homedisplay: 1,
           lecturas: 1,
           novainfo: 1,
-          servicio: 1,
+          relay: 1,
         }
       }
     ]).exec((err, result) => {

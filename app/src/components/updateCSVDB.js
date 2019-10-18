@@ -221,7 +221,7 @@ class UpdateCSVDB extends Component {
 
 	handleUploadRecords = async () => {
 		this.registerLectureStatus()
-		const {dataLoaded, dataStatus, fileType} = this.state 
+		const {fileType} = this.state 
 		let endpoint = `${this.props.apiUrl}`
 		if (fileType === 'Usuarios Asociados') {
 			endpoint += '/api/dbcsv/addUA' 

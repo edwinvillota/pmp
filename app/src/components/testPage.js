@@ -1,15 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import axios from 'axios'
-import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import UploadCSVButton from './uploadCSVButton'
 import FilesUploader from './filesUploader'
 import OrderDataList from './orderDataList'
-import {
-    Grid,
-    Paper
-} from '@material-ui/core'
 import {
     setFileStatus,
     setLoaderStatus
@@ -66,20 +59,20 @@ class TestPage extends Component {
     }
 
     render() {
-        const section_names = {
-            1: 'DATOS_ODT',
-            2: 'INFORMACION_BASICA',
-            3: 'MEDIDOR_SITIO',
-            4: 'INFORMACION_PREDIO',
-            5: 'PRUEBAS_MEDIDOR',
-            6: 'CONEXION_EN_BORNES',
-            7: 'PRUEBAS_ACOMETIDA',
-            8: 'GEOREFERENCIACION',
-            9: 'AFORO',
-            10: 'ACCIONES_TOMADAS',
-            11: 'PAGARE',
-            12: 'FINALIZACION'
-        }
+        // const section_names = {
+        //     1: 'DATOS_ODT',
+        //     2: 'INFORMACION_BASICA',
+        //     3: 'MEDIDOR_SITIO',
+        //     4: 'INFORMACION_PREDIO',
+        //     5: 'PRUEBAS_MEDIDOR',
+        //     6: 'CONEXION_EN_BORNES',
+        //     7: 'PRUEBAS_ACOMETIDA',
+        //     8: 'GEOREFERENCIACION',
+        //     9: 'AFORO',
+        //     10: 'ACCIONES_TOMADAS',
+        //     11: 'PAGARE',
+        //     12: 'FINALIZACION'
+        // }
 
         return (
         <div className='content'>

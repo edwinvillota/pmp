@@ -1,11 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import axios from 'axios'
 import { withStyles } from '@material-ui/core/styles'
-import {
-    Grid
-} from '@material-ui/core'
 import {
     Doughnut
 } from 'react-chartjs-2'

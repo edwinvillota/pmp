@@ -150,14 +150,14 @@ class FilesUploader extends Component {
     }
 
     handleClick = e => {
-        if (this.props.filesLoader.filesToUpload.length != 0) {
+        if (this.props.filesLoader.filesToUpload.length !== 0) {
             this.props.cleanFilesToUpload()
         }    
     }
 
     handleDragOver = e => {
         e.preventDefault()
-        if (this.props.filesLoader.filesToUpload.length != 0) {
+        if (this.props.filesLoader.filesToUpload.length !== 0) {
             this.props.cleanFilesToUpload()
         }      
         e.target.classList.add(this.props.classes.onDragOver)
@@ -246,7 +246,7 @@ class FilesUploader extends Component {
                             <Typography
                                 variant='caption' 
                                 className={classes.dropAreaText}>
-                                {(filesToUpload.length == 0) ? 'Arratre su archivo aqui.' : false}
+                                {(filesToUpload.length === 0) ? 'Arratre su archivo aqui.' : false}
                             </Typography>
                             {fileItems}
                         </Grid>

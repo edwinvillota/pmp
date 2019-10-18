@@ -10,8 +10,7 @@ let csvuaSchema = new Schema({
   colector: { type: 'Number' },
   medidor: { type: 'Number' },
   homedisplay: { type: 'Number' },
-  limite: { type: 'String' },
-  servicio: { type: 'String' }
+  relay: { type: 'String' }
 })
 
 

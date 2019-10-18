@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
@@ -8,11 +7,11 @@ import {
     Grid,
     Typography,
     Button,
-    Paper,
     Card,
     CardContent,
     CardActions,
-    FormHelperText
+    CardActionArea,
+    CardMedia
 } from '@material-ui/core'
 
 const styles = theme => ({
@@ -30,12 +29,15 @@ const styles = theme => ({
         margin: '0 2px',
         transform: 'scale(0.8)',
     },
-      title: {
+    title: {
         fontSize: 14,
     },
-      pos: {
+    pos: {
         marginBottom: 12,
     },
+    media: {
+        objectFit: 'cover'
+    }
 })
 
 class TransformersDashboard extends Component {
@@ -67,17 +69,27 @@ class TransformersDashboard extends Component {
                     <Grid item xs={12}>
                         <Grid item xs={4}>
                             <Card className={classes.card}>
+                                <CardActionArea>
+                                    <CardMedia
+                                        component="img"
+                                        alt="Transformer"
+                                        className={classes.media}
+                                        height="140"
+                                        image="/images/balances/card/add_transformer.jpg"
+                                        title="Transformer"
+                                        />
+                                </CardActionArea>
                                 <CardContent>
                                     <Typography variant='h5' component='h2'>
                                         Agregar Transformador
                                     </Typography>
                                     <Typography className={classes.pos} color="textSecondary">
-                                        Crear Nuevo Transformador
+                                        Agregar un nuevo Transformador para balance energético.
                                     </Typography>
                                 </CardContent>
                                 <CardActions>
                                     <Link to='/transformers/new' className='nav-link'>
-                                        <Button size='small' variant='contained' color='primary'>
+                                        <Button size='small' color='primary'>
                                             Agregar
                                         </Button>
                                     </Link>

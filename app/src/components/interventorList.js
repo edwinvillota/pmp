@@ -37,9 +37,6 @@ const styles = theme => ({
 })
 
 class InterventorChip extends Component {
-    constructor() {
-        super ()
-    }
     render() {
         const { 
             interventor,

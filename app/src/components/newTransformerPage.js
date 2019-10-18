@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles'
 import {
@@ -14,7 +12,6 @@ import {
     FormControl,
     InputLabel,
     Select,
-    FilledInput,
     OutlinedInput
 } from '@material-ui/core'
 import {
@@ -24,7 +21,6 @@ import {
 import axios from 'axios'
 import FilesUploader from './filesUploader'
 import * as XLSX from 'xlsx'
-import TransformerUsersTable from './trasformerUsersTable'
 import PaginationTable from './paginationTable'
 
 const styles = theme => ({
@@ -110,11 +106,9 @@ class NewTransformerPage extends Component {
         let isValidData = true
         const {
             structure, 
-            town,
             macro,
             kva,
             ratio,
-            users
         } = this.state
 
         let errors = {}

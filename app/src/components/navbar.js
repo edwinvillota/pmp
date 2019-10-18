@@ -17,7 +17,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import BuildIcon from '@material-ui/icons/Build'
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -29,7 +28,9 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import FolderIcon from '@material-ui/icons/Folder'
 import MoreIcon from '@material-ui/icons/MoreHoriz'
 import FlashOnIcon from '@material-ui/icons/FlashOn'
-import HomeIcon from '@material-ui/icons/Home'
+import DashboardIcon from '@material-ui/icons/Dashboard'
+import BlurLinearIcon from '@material-ui/icons/BlurLinear'
+import AssestmentIcon from '@material-ui/icons/Assessment'
 
 const drawerWidth = 240;
 
@@ -104,7 +105,9 @@ class MiniDrawer extends React.Component {
   state = {
     open: false,
     subMenus : {
-      tools : false
+      MEC : false,
+      MIT: false,
+      balance: false
     }
   }
 
@@ -120,10 +123,26 @@ class MiniDrawer extends React.Component {
     this.props.logoutUser(this.props.history)
   }
 
-  handleToolsExpand = () => {
+  handleMECExpand = () => {
     this.setState({ subMenus : {
-      tools : !this.state.subMenus.tools
+      MEC : !this.state.subMenus.MEC
     } })
+  }
+
+  handleMITExpand = () => {
+    this.setState({
+      subMenus: {
+        MIT: !this.state.subMenus.MIT
+      }
+    })
+  }
+
+  handleBalanceExpand = () => {
+    this.setState({
+      subMenus: {
+        balance: !this.state.subMenus.balance
+      }
+    })
   }
 
   handleDrawerOpen = () => {
@@ -146,18 +165,18 @@ class MiniDrawer extends React.Component {
         </ListItem>
         <Link className="nav-link" to="/">
           <ListItem button key='Home'>
-            <ListItemIcon><HomeIcon/></ListItemIcon>
+            <ListItemIcon><DashboardIcon/></ListItemIcon>
             <ListItemText>Inicio</ListItemText>
           </ListItem>
         </Link>
-        <ListItem button onClick={this.handleToolsExpand}>
+        <ListItem button onClick={this.handleMECExpand}>
           <ListItemIcon>
-            <BuildIcon />
+            <BlurLinearIcon />
           </ListItemIcon>
-          <ListItemText inset primary="Herramientas" />
-          {this.state.subMenus.tools ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText inset primary="Centralizada" />
+          {this.state.subMenus.MEC ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={this.state.subMenus.tools} timeout="auto" unmountOnExit>
+        <Collapse in={this.state.subMenus.MEC} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <Link className="nav-link" to="/tools/boxState">
               <ListItem button className={classes.nested}>
@@ -185,16 +204,48 @@ class MiniDrawer extends React.Component {
             </Link>
           </List>
         </Collapse>
+        <ListItem button onClick={this.handleMITExpand}>
+          <ListItemIcon>
+            <AssestmentIcon />
+          </ListItemIcon>
+          <ListItemText inset primary="Inteligente" />
+          {this.state.subMenus.MIT ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={this.state.subMenus.MIT} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <Link className="nav-link" to="/">
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MoreIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Prueba" />
+              </ListItem>
+            </Link>
+          </List>
+        </Collapse>
+        <ListItem button onClick={this.handleBalanceExpand}>
+          <ListItemIcon>
+            <FlashOnIcon />
+          </ListItemIcon>
+          <ListItemText inset primary="Balances" />
+          {this.state.subMenus.balance ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={this.state.subMenus.balance} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <Link className="nav-link" to="/transformers/dashboard">
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MoreIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="Dashboard" />
+              </ListItem>
+            </Link>
+          </List>
+        </Collapse>
         <Link className="nav-link" to="/projects">
           <ListItem button key='Login'>
             <ListItemIcon><FolderIcon></FolderIcon></ListItemIcon>
             <ListItemText>Contratos</ListItemText>
-          </ListItem>
-        </Link>
-        <Link className="nav-link" to="/transformers/dashboard">
-          <ListItem button key='Balance Energético'>
-            <ListItemIcon><FlashOnIcon/></ListItemIcon>
-            <ListItemText>Balance Energético</ListItemText>
           </ListItem>
         </Link>
       </List>
@@ -239,7 +290,7 @@ class MiniDrawer extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" noWrap>
-              Project Management Platform
+              MEC Projects Application
             </Typography>
           </Toolbar>
         </AppBar>

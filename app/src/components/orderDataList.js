@@ -5,7 +5,6 @@ import {
     ExpansionPanelDetails,
     ExpansionPanelSummary,
     Typography,
-    Chip,
     Divider
 } from '@material-ui/core/'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -26,9 +25,6 @@ const styles = theme => ({
 })
 
 class OrderDataList extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         const {orders} = this.props
@@ -46,9 +42,6 @@ class OrderDataList extends Component {
 }
 
 class OrderData extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         const { order, classes } = this.props

@@ -77,9 +77,6 @@ import {
 
 
 class History extends Component {
-  constructor() {
-    super()
-  }
 
   render() {
     const { 
@@ -352,7 +349,7 @@ class BoxState extends Component {
                     <TableCell numeric>{u.homedisplay}</TableCell>
                     <TableCell numeric>{u.lecturas[0].lectura_activa}</TableCell>
                     <TableCell >{novainfo.direccion.toLowerCase()}</TableCell>
-                    <TableCell >{u.servicio}</TableCell>
+                    <TableCell >{u.relay === '1' ? "Encendido" : "Suspendido"}</TableCell>
                     <TableCell >{u.lecturas[0].anomalia}</TableCell>
                   </TableRow>
                 );
