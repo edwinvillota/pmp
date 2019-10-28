@@ -2,6 +2,10 @@
 import Transformer from '../models/transformer'
 import TransformerUser from '../models/transformerUser'
 
+import Formidable from 'formidable'
+import FileReader from 'filereader'
+import fs from 'fs'
+
 const TransformerController = {}
 
 TransformerController.addTransformer = async (req, res) => {
@@ -70,6 +74,32 @@ TransformerController.getTransformerData = async (req, res) => {
     } catch (err) {
         res.send(err)
     }
+}
+
+TransformerController.addTransformerUser = async (req, res) => {
+    let form = new Formidable.IncomingForm()
+    form.parse(req,(err, fields, files) => {
+        const user = JSON.parse(fields.user)
+        const location = JSON.parse(fields.location)
+        const transformerFolder = `storage/balances/${user.transformer}`
+        const stakeoutFolder = `${transformerFolder}/stakeout`
+
+        if (!fs.existsSync(transformerFolder)){
+            fs.mkdirSync(transformerFolder)
+        }
+
+        if(!fs.existsSync(stakeoutFolder)){
+            fs.mkdirSync(stakeoutFolder)
+        }
+        
+        fs.rename(files.Activa.path,`${stakeoutFolder}/${files.Activa.name}.jpg`, err => {
+            console.log(err)
+        })
+        fs.rename(files.Reactiva.path,`${stakeoutFolder}/${files.Reactiva.name}.jpg`, err => {
+            console.log(err)
+        })
+    })
+    res.status(200).json({status: 'OK', message:'Successfull'})
 }
 
 export default TransformerController

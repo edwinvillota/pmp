@@ -20,4 +20,8 @@ router.get('/transformer/:id', (req, res) => {
     Transformer.getTransformerData(req, res)
 })
 
+router.post('/transformer/:id/addUser', (req, res) => {
+    Transformer.addTransformerUser(req, res)
+})
+
 export default router

@@ -111,9 +111,9 @@ class NewTransformerPage extends Component {
             ratio,
         } = this.state
 
-        let errors = {}
+        let errors = this.state.errors
         // Structure validations
-        if (structure.length < 10 || structure.length > 10) {
+        if (structure.length > 10 || structure.length < 4) {
             errors = {
                 ...errors,
                 structure: {
@@ -165,7 +165,7 @@ class NewTransformerPage extends Component {
         this.setState({
             errors: errors
         })
-
+        
         if (isValidData) {
             this.handleSendTransformer(e)
         }
