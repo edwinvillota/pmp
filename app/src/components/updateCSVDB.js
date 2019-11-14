@@ -160,7 +160,7 @@ class UpdateCSVDB extends Component {
 		const MECUsers = dataLoaded.filter(lec => (typeof lec.Medidor === 'number'))
 
 		MITUsers.forEach(lec => {
-			if (lec['Lectura Activa'] > 0) {
+			if (lec['Lectura Activa'] > 0 && !lec['Anomalia']) {
 				lectureStatus.mit.online += 1
 			} else {
 				lectureStatus.mit.offline += 1
@@ -168,7 +168,7 @@ class UpdateCSVDB extends Component {
 		})
 
 		MECUsers.forEach(lec => {
-			if (lec['Lectura Activa'] > 0) {
+			if (lec['Lectura Activa'] > 0 && !lec['Anomalia']) {
 				lectureStatus.mec.online += 1
 			} else {
 				lectureStatus.mec.offline += 1
@@ -220,13 +220,13 @@ class UpdateCSVDB extends Component {
 	}
 
 	handleUploadRecords = async () => {
-		this.registerLectureStatus()
 		const {fileType} = this.state 
 		let endpoint = `${this.props.apiUrl}`
 		if (fileType === 'Usuarios Asociados') {
 			endpoint += '/api/dbcsv/addUA' 
 		} else if (fileType === 'Lecturas') {
 			endpoint += '/api/dbcsv/addLEC'
+			this.registerLectureStatus()
 		} else {
 			alert('Este tipo de archivo no tiene metodo de carga')
 			return

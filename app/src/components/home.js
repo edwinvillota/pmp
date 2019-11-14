@@ -26,7 +26,7 @@ class Home extends Component {
         <Grid item xs={8}>
           <Paper className={classes.paper}>
             <Typography variant='subtitle1'>COMPORTAMIENTO DE COMUNICACIÓN</Typography>
-            <LecturesGraphic type='MEC' lastRecords={15}/>
+            <LecturesGraphic type='MEC' lastRecords={60}/>
           </Paper>
         </Grid>
         <Grid item xs={4}>
@@ -41,7 +41,7 @@ class Home extends Component {
         <Grid item xs={8}>
           <Paper className={classes.paper}>
             <Typography variant='subtitle1'>COMPORTAMIENTO DE COMUNICACIÓN</Typography>
-            <LecturesGraphic type='MIT' lastRecords={5}/>
+            <LecturesGraphic type='MIT' lastRecords={60}/>
           </Paper>
         </Grid>
         <Grid item xs={4}>

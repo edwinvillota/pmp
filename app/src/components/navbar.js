@@ -95,6 +95,9 @@ const styles = theme => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
+  expandIcon: {
+    color: '#333333'
+  },
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
@@ -174,7 +177,7 @@ class MiniDrawer extends React.Component {
             <BlurLinearIcon />
           </ListItemIcon>
           <ListItemText inset primary="Centralizada" />
-          {this.state.subMenus.MEC ? <ExpandLess /> : <ExpandMore />}
+          {this.state.subMenus.MEC ? <ExpandLess className={classes.expandIcon}/> : <ExpandMore className={classes.expandIcon}/>}
         </ListItem>
         <Collapse in={this.state.subMenus.MEC} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
@@ -209,7 +212,7 @@ class MiniDrawer extends React.Component {
             <AssestmentIcon />
           </ListItemIcon>
           <ListItemText inset primary="Inteligente" />
-          {this.state.subMenus.MIT ? <ExpandLess /> : <ExpandMore />}
+          {this.state.subMenus.MIT ? <ExpandLess className={classes.expandIcon}/> : <ExpandMore className={classes.expandIcon}/>}
         </ListItem>
         <Collapse in={this.state.subMenus.MIT} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
@@ -228,7 +231,7 @@ class MiniDrawer extends React.Component {
             <FlashOnIcon />
           </ListItemIcon>
           <ListItemText inset primary="Balances" />
-          {this.state.subMenus.balance ? <ExpandLess /> : <ExpandMore />}
+          {this.state.subMenus.balance ? <ExpandLess className={classes.expandIcon}/> : <ExpandMore className={classes.expandIcon}/>}
         </ListItem>
         <Collapse in={this.state.subMenus.balance} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
@@ -238,6 +241,14 @@ class MiniDrawer extends React.Component {
                   <MoreIcon />
                 </ListItemIcon>
                 <ListItemText inset primary="Dashboard" />
+              </ListItem>
+            </Link>
+            <Link className="nav-link" to="/vtp/reports">
+              <ListItem button className={classes.nested}>
+                <ListItemIcon>
+                  <MoreIcon />
+                </ListItemIcon>
+                <ListItemText inset primary="VTP" />
               </ListItem>
             </Link>
           </List>

@@ -11,6 +11,7 @@ import appointments from './routes/appointments.routes'
 import dbcsv from './routes/dbcsv.routes'
 import transformers from './routes/transformers.routes'
 import analysis from './routes/analysis.routes'
+import vtp from './routes/vtp.routes'
 // Middlewares imports
 import Auth from './middlewares/authorization'
 // Socket server
@@ -41,6 +42,7 @@ app.use('/api', appointments)
 app.use('/api', dbcsv)
 app.use('/api', transformers)
 app.use('/api', analysis)
+app.use('/api', vtp)
 app.listen(config.port, () => {
   console.log(`Server started on port ${config.port}`)
 })

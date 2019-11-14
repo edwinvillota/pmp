@@ -61,6 +61,7 @@ DbcsvController.CSVTypes = [
     headers: [ 
       'ï»¿"Codigo Usuario"',
       'Medidor',
+      'Marca',
       'Fecha Consulta',
       'Fecha de Lectura',
       'Lectura Activa',
@@ -71,6 +72,7 @@ DbcsvController.CSVTypes = [
     keys: [
       'usuario',
       'medidor',
+      'marca',
       'fecha_consulta',
       'fecha_lectura',
       'lectura_activa',
@@ -130,7 +132,7 @@ DbcsvController.addUA = async (req, res) => {
 
 DbcsvController.addLEC = async (req, res) => {
   let form = new Formidable.IncomingForm()
-  const headers = ['usuario','medidor','fecha_consulta','fecha_lectura','lectura_activa','lectura_reactiva','anomalia']
+  const headers = ['usuario','medidor','marca','fecha_consulta','fecha_lectura','lectura_activa','lectura_reactiva','anomalia']
   form.parse(req,(err, fields, files) => {
   })
   form.on('file', async (name, file) => {
