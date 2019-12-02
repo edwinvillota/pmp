@@ -11,13 +11,19 @@ export const setVTPRequestStatus = (newStatus) => {
     }
 }
 
-export const requestVTPReports = (serial) => {
+export const requestVTPReports = (serial, init_date, end_date) => {
     return (dispatch, getState) => {
         dispatch(setVTPRequestStatus(1))
+        dispatch(updateVTPReports([]))
         const {apiUrl} = getState().api
         const endpoint = `${apiUrl}/api/vtp_reports`
-        axios.get(endpoint)
-        return axios.get(endpoint)
+        return axios.get(endpoint, {
+            params: {
+                serial: serial,
+                init_date: init_date,
+                end_date: end_date
+            }
+        })
             .then(response => {
                 const data = response.data
                 dispatch(setVTPRequestStatus(2))

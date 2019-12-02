@@ -14,6 +14,7 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import moment from 'moment-timezone'
 
 const actionsStyles = theme => ({
   root: {
@@ -96,11 +97,11 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
 
 const styles = theme => ({
   root: {
-    width: '100%',
+    width: 'calc(100vw - 135px)',
     marginTop: theme.spacing.unit * 3,
   },
   table: {
-    minWidth: 500,
+    minWidth: 500
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -114,7 +115,7 @@ class CustomPaginationActionsTable extends React.Component {
         this.state = {
             rows: this.props.reports,
             page: 0,
-            rowsPerPage: 6,
+            rowsPerPage: 8,
           }
     }
 
@@ -126,6 +127,24 @@ class CustomPaginationActionsTable extends React.Component {
     this.setState({ page: 0, rowsPerPage: event.target.value });
   };
 
+  headers = () => {
+    let headers = [
+      'Serial',
+      'Fecha',
+      'IP'
+    ]
+    for (let i = 1; i < 22; i++) {
+      headers.push(`CT${i} V`)
+      headers.push(`CT${i} A`)
+      headers.push(`CT${i} Kwh`)
+    }
+
+    return headers.map((h,key) => (
+      <TableCell key={key}>
+        {h}
+      </TableCell>
+    ))
+  }
 
   render() {
     const { classes } = this.props;
@@ -138,72 +157,7 @@ class CustomPaginationActionsTable extends React.Component {
           <Table className={classes.table}>
             <TableHead>
                 <TableRow>
-                    <TableCell>Serial</TableCell>
-                    <TableCell>Fecha</TableCell>
-                    <TableCell>IP</TableCell>
-                    <TableCell>CT1 V</TableCell>
-                    <TableCell>CT1 A</TableCell>
-                    <TableCell>CT1 C</TableCell>
-                    <TableCell>CT2 V</TableCell>
-                    <TableCell>CT2 A</TableCell>
-                    <TableCell>CT2 C</TableCell>
-                    <TableCell>CT3 V</TableCell>
-                    <TableCell>CT3 A</TableCell>
-                    <TableCell>CT3 C</TableCell>
-                    <TableCell>CT4 V</TableCell>
-                    <TableCell>CT4 A</TableCell>
-                    <TableCell>CT4 C</TableCell>
-                    <TableCell>CT5 V</TableCell>
-                    <TableCell>CT5 A</TableCell>
-                    <TableCell>CT5 C</TableCell>
-                    <TableCell>CT6 V</TableCell>
-                    <TableCell>CT6 A</TableCell>
-                    <TableCell>CT6 C</TableCell>
-                    <TableCell>CT7 V</TableCell>
-                    <TableCell>CT7 A</TableCell>
-                    <TableCell>CT7 C</TableCell>
-                    <TableCell>CT8 V</TableCell>
-                    <TableCell>CT8 A</TableCell>
-                    <TableCell>CT8 C</TableCell>
-                    <TableCell>CT9 V</TableCell>
-                    <TableCell>CT9 A</TableCell>
-                    <TableCell>CT9 C</TableCell>
-                    <TableCell>CT10 V</TableCell>
-                    <TableCell>CT10 A</TableCell>
-                    <TableCell>CT10 C</TableCell>
-                    <TableCell>CT11 V</TableCell>
-                    <TableCell>CT11 A</TableCell>
-                    <TableCell>CT11 C</TableCell>
-                    <TableCell>CT12 V</TableCell>
-                    <TableCell>CT12 A</TableCell>
-                    <TableCell>CT12 C</TableCell>
-                    <TableCell>CT13 V</TableCell>
-                    <TableCell>CT13 A</TableCell>
-                    <TableCell>CT13 C</TableCell>
-                    <TableCell>CT14 V</TableCell>
-                    <TableCell>CT14 A</TableCell>
-                    <TableCell>CT14 C</TableCell>
-                    <TableCell>CT15 V</TableCell>
-                    <TableCell>CT15 A</TableCell>
-                    <TableCell>CT15 C</TableCell>
-                    <TableCell>CT16 V</TableCell>
-                    <TableCell>CT16 A</TableCell>
-                    <TableCell>CT16 C</TableCell>
-                    <TableCell>CT17 V</TableCell>
-                    <TableCell>CT17 A</TableCell>
-                    <TableCell>CT17 C</TableCell>
-                    <TableCell>CT18 V</TableCell>
-                    <TableCell>CT18 A</TableCell>
-                    <TableCell>CT18 C</TableCell>
-                    <TableCell>CT19 V</TableCell>
-                    <TableCell>CT19 A</TableCell>
-                    <TableCell>CT19 C</TableCell>
-                    <TableCell>CT20 V</TableCell>
-                    <TableCell>CT20 A</TableCell>
-                    <TableCell>CT20 C</TableCell>
-                    <TableCell>CT21 V</TableCell>
-                    <TableCell>CT21 A</TableCell>
-                    <TableCell>CT21 C</TableCell>
+                  {this.headers()}
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -212,71 +166,15 @@ class CustomPaginationActionsTable extends React.Component {
                   <TableCell component="th" scope="row">
                     {row.serial}
                   </TableCell>
-                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{moment(row.date).tz('America/Bogota').format('YYYY-MM-DD hh:mm:ss')}</TableCell>
                   <TableCell>{row.ip}</TableCell>
-                  <TableCell>{row.cts[0].voltage}</TableCell>
-                  <TableCell>{row.cts[0].current}</TableCell>
-                  <TableCell>{row.cts[0].power_1}</TableCell>
-                  <TableCell>{row.cts[1].voltage}</TableCell>
-                  <TableCell>{row.cts[1].current}</TableCell>
-                  <TableCell>{row.cts[1].power_1}</TableCell>
-                  <TableCell>{row.cts[2].voltage}</TableCell>
-                  <TableCell>{row.cts[2].current}</TableCell>
-                  <TableCell>{row.cts[2].power_1}</TableCell>
-                  <TableCell>{row.cts[3].voltage}</TableCell>
-                  <TableCell>{row.cts[3].current}</TableCell>
-                  <TableCell>{row.cts[3].power_1}</TableCell>
-                  <TableCell>{row.cts[4].voltage}</TableCell>
-                  <TableCell>{row.cts[4].current}</TableCell>
-                  <TableCell>{row.cts[4].power_1}</TableCell>
-                  <TableCell>{row.cts[5].voltage}</TableCell>
-                  <TableCell>{row.cts[5].current}</TableCell>
-                  <TableCell>{row.cts[5].power_1}</TableCell>
-                  <TableCell>{row.cts[6].voltage}</TableCell>
-                  <TableCell>{row.cts[6].current}</TableCell>
-                  <TableCell>{row.cts[6].power_1}</TableCell>
-                  <TableCell>{row.cts[7].voltage}</TableCell>
-                  <TableCell>{row.cts[7].current}</TableCell>
-                  <TableCell>{row.cts[7].power_1}</TableCell>
-                  <TableCell>{row.cts[8].voltage}</TableCell>
-                  <TableCell>{row.cts[8].current}</TableCell>
-                  <TableCell>{row.cts[8].power_1}</TableCell>
-                  <TableCell>{row.cts[9].voltage}</TableCell>
-                  <TableCell>{row.cts[9].current}</TableCell>
-                  <TableCell>{row.cts[9].power_1}</TableCell>
-                  <TableCell>{row.cts[10].voltage}</TableCell>
-                  <TableCell>{row.cts[10].current}</TableCell>
-                  <TableCell>{row.cts[10].power_1}</TableCell>
-                  <TableCell>{row.cts[11].voltage}</TableCell>
-                  <TableCell>{row.cts[11].current}</TableCell>
-                  <TableCell>{row.cts[11].power_1}</TableCell>
-                  <TableCell>{row.cts[12].voltage}</TableCell>
-                  <TableCell>{row.cts[12].current}</TableCell>
-                  <TableCell>{row.cts[12].power_1}</TableCell>
-                  <TableCell>{row.cts[13].voltage}</TableCell>
-                  <TableCell>{row.cts[13].current}</TableCell>
-                  <TableCell>{row.cts[13].power_1}</TableCell>
-                  <TableCell>{row.cts[14].voltage}</TableCell>
-                  <TableCell>{row.cts[14].current}</TableCell>
-                  <TableCell>{row.cts[14].power_1}</TableCell>
-                  <TableCell>{row.cts[15].voltage}</TableCell>
-                  <TableCell>{row.cts[15].current}</TableCell>
-                  <TableCell>{row.cts[15].power_1}</TableCell>
-                  <TableCell>{row.cts[16].voltage}</TableCell>
-                  <TableCell>{row.cts[16].current}</TableCell>
-                  <TableCell>{row.cts[16].power_1}</TableCell>
-                  <TableCell>{row.cts[17].voltage}</TableCell>
-                  <TableCell>{row.cts[17].current}</TableCell>
-                  <TableCell>{row.cts[17].power_1}</TableCell>
-                  <TableCell>{row.cts[18].voltage}</TableCell>
-                  <TableCell>{row.cts[18].current}</TableCell>
-                  <TableCell>{row.cts[18].power_1}</TableCell>
-                  <TableCell>{row.cts[19].voltage}</TableCell>
-                  <TableCell>{row.cts[19].current}</TableCell>
-                  <TableCell>{row.cts[19].power_1}</TableCell>
-                  <TableCell>{row.cts[20].voltage}</TableCell>
-                  <TableCell>{row.cts[20].current}</TableCell>
-                  <TableCell>{row.cts[20].power_1}</TableCell>
+                  {row.cts.map((ct, k) => {
+                    const cells = []
+                    cells.push(<TableCell key={k}>{ct.voltage}</TableCell>)
+                    cells.push(<TableCell key={k}>{ct.current}</TableCell>)
+                    cells.push(<TableCell key={k}>{ct.consumption}</TableCell>)
+                    return cells
+                  })}
                 </TableRow>
               ))}
               {emptyRows > 0 && (

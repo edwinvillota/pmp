@@ -9,12 +9,12 @@ const vtp_reportSchema = new Schema({
         ct: Number,
         unknown_1: String,
         consumption: Number,
+        unknown_2: Number,
         voltage: Number,
         current: Number,
-        power_1: Number,
-        power_2: Number,
-        power_factor: Number,
-        unknown_2: Number
+        unknown_3: Number,
+        unknown_4: Number,
+        unknown_5: Number
     }]
 })
 

@@ -14,7 +14,24 @@ VTPController.addVTPReport = async (req,res) => {
 }
 
 VTPController.getVTPReports = async (req, res) => {
-    vtp_report.find().exec((err, data) => {
+    const {
+        serial,
+        init_date,
+        end_date
+    } = req.query
+    
+    vtp_report.find({
+        $and:
+            [
+                {serial: {$eq: serial}},
+                {date: {$gte: init_date}},
+                {date: {$lte: end_date}}
+            ]
+    })
+    .sort({
+        date: 1
+    })
+    .exec((err, data) => {
         if (err) {
             console.log(err)
             res.status(500).send('Error')
