@@ -17,4 +17,10 @@ export const SET_LOADER_STATUS = 'SET_LOADER_STATUS'
 export const SET_VTP_REQUEST_STATUS = 'SET_VTP_REQUEST_STATUS'
 export const REQUEST_VTP_REPORTS = 'REQUEST_VTP_REPORTS'
 export const UPDATE_VTP_REPORTS = 'UPDATE_VTP_REPORTS'
+// Administracion 
+export const GET_ALL_USERS = 'GET_ALL_USERS'
+export const GET_USER_BY_ID = 'GET_USER_BY_ID'
+export const ADD_USER = 'ADD_USER'
+export const UPDATE_USER = 'UPDATE_USER'
+export const DELETE_USER = 'DELETE_USER'
 

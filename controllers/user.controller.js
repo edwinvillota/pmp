@@ -61,4 +61,13 @@ UserController.sign_in = (req, res) => {
   })
 }
 
+UserController.delete_user = (req, res) => {
+  const { id } = req.params
+
+  User.deleteOne({_id: id}, err => {
+    if (err) {console.log(err)}
+    res.status(200).json({status: 'ok', message: 'Usuario eliminado'})
+  })
+}
+
 export default UserController

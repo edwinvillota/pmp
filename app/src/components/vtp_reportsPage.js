@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import axios from 'axios'
 import {
     Grid,
     Button,
@@ -14,7 +13,7 @@ import {
 } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import VTPReportsTable from '../components/vtpReportsTable'
-import { setVTPRequestStatus, requestVTPReports } from '../actions/vtp'
+import { requestVTPReports } from '../actions/vtp'
 import * as XLSX from 'xlsx'
 
 const styles = theme => ({
@@ -32,10 +31,6 @@ class VTPReportsPage extends Component {
             end_date: Date.now(),
             status: 'idle'
         }
-    }
-
-    componentDidMount () {
-        
     }
 
     handleSearch = () => {

@@ -10,6 +10,10 @@ router.post('/users', (req, res) => {
   UserController.register(req, res)
 })
 
+router.delete('/users/:id',(req, res) => {
+  UserController.delete_user(req, res)
+})
+
 router.post('/users/signin', (req, res) => {
   UserController.sign_in(req, res)
 })

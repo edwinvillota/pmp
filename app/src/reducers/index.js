@@ -5,6 +5,7 @@ import projectsReducer from './projectsReducer'
 import apiReducer from './apiReducer'
 import filesLoaderReducer from './filesLoaderReducer'
 import vtpReducer from './vtpReducer'
+import administrationReducer from './administrationReducer'
 
 export default combineReducers({
   errors: errorReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
   projects: projectsReducer,
   api: apiReducer,
   filesLoader: filesLoaderReducer,
-  vtp: vtpReducer
+  vtp: vtpReducer,
+  administration: administrationReducer
 })

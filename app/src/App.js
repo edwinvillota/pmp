@@ -18,6 +18,8 @@ import TestPage from './components/testPage'
 import TransformersDashboard from './components/transformersDashboard'
 import NewTransformersPage from './components/newTransformerPage'
 import VTPReportsPage from './components/vtp_reportsPage'
+import AdministrationPage from './components/administrationPage'
+import UserPage from './components/usersPage'
 
 if ( localStorage.jwtToken ) {
   setAuthToken(localStorage.jwtToken)
@@ -50,6 +52,8 @@ class App extends Component {
                 <Route exact path='/transformers/dashboard' component={ TransformersDashboard}/>
                 <Route exact path='/transformers/new' component={ NewTransformersPage }/>
                 <Route exact path='/vtp/reports' component={ VTPReportsPage }/>
+                <Route exact path='/administration' component={ AdministrationPage }/>
+                <Route exact path='/administration/users' component={ UserPage }/>
               </div>
             </Navbar>
           </div>
