@@ -53,49 +53,106 @@ class TransformersDashboard extends Component {
 
         return (
             <div className='content'>
-                <Grid container className={classes.root} 
+                <Grid container className={classes.root}  spacing={24}
                     style={{
                         display: 'flex',
-                        justifyContent: 'center'
                     }}
                     >
-                    <Typography variant='h5' component='h3' align='center'
-                        style={{
-                            marginBottom: '1em'
-                        }}
-                        >
-                        BALANCE ENERGÉTICO DE TRANSFORMADORES
-                    </Typography>
-                    <Grid item xs={12}>
-                        <Grid item xs={4}>
-                            <Card className={classes.card}>
-                                <CardActionArea>
-                                    <CardMedia
-                                        component="img"
-                                        alt="Transformer"
-                                        className={classes.media}
-                                        height="140"
-                                        image="/images/balances/card/add_transformer.jpg"
-                                        title="Transformer"
-                                        />
-                                </CardActionArea>
-                                <CardContent>
-                                    <Typography variant='h5' component='h2'>
-                                        Agregar Transformador
-                                    </Typography>
-                                    <Typography className={classes.pos} color="textSecondary">
-                                        Agregar un nuevo Transformador para balance energético.
-                                    </Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Link to='/transformers/new' className='nav-link'>
-                                        <Button size='small' color='primary'>
-                                            Agregar
-                                        </Button>
-                                    </Link>
-                                </CardActions>
-                            </Card>
-                        </Grid>
+                    <Grid xs={12}>
+                        <Typography variant='h5' component='h3' align='center'
+                            style={{
+                                marginBottom: '1em'
+                            }}
+                            >
+                            BALANCE ENERGÉTICO DE TRANSFORMADORES
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Card className={classes.card}>
+                            <CardActionArea>
+                                <CardMedia
+                                    component="img"
+                                    alt="Transformer"
+                                    className={classes.media}
+                                    height="140"
+                                    image="/images/balances/card/add_transformer.jpg"
+                                    title="Transformer"
+                                    />
+                            </CardActionArea>
+                            <CardContent>
+                                <Typography variant='h5' component='h2'>
+                                    Agregar Transformador
+                                </Typography>
+                                <Typography className={classes.pos} color="textSecondary">
+                                    Agregar un nuevo Transformador para balance energético.
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Link to='/transformers/new' className='nav-link'>
+                                    <Button size='small' color='primary'>
+                                        Agregar
+                                    </Button>
+                                </Link>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Card className={classes.card}>
+                            <CardActionArea>
+                                <CardMedia
+                                    component="img"
+                                    alt="Transformer"
+                                    className={classes.media}
+                                    height="140"
+                                    image="/images/balances/card/management.jpg"
+                                    title="management"
+                                    />
+                            </CardActionArea>
+                            <CardContent>
+                                <Typography variant='h5' component='h2'>
+                                    Administrar Transformadores
+                                </Typography>
+                                <Typography className={classes.pos} color="textSecondary">
+                                    Eliminar y administrar transformadores registrados en la base de datos.
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Link to='/transformers/management' className='nav-link'>
+                                    <Button size='small' color='primary'>
+                                        Ingresar
+                                    </Button>
+                                </Link>
+                            </CardActions>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Card className={classes.card}>
+                            <CardActionArea>
+                                <CardMedia
+                                    component="img"
+                                    alt="Transformer"
+                                    className={classes.media}
+                                    height="140"
+                                    image="/images/balances/card/add_tasks.jpg"
+                                    title="Transformer"
+                                    />
+                            </CardActionArea>
+                            <CardContent>
+                                <Typography variant='h5' component='h2'>
+                                    Asignar Tareas
+                                </Typography>
+                                <Typography className={classes.pos} color="textSecondary">
+                                    Asignar tareas de levantamiento y toma de lecturas para transformadores registrados.
+                                </Typography>
+                            </CardContent>
+                            <CardActions>
+                                <Link to='/transformers/activities' className='nav-link'>
+                                    <Button size='small' color='primary'>
+                                        Asignar
+                                    </Button>
+                                </Link>
+                            </CardActions>
+                        </Card>
                     </Grid>
                 </Grid>
             </div>

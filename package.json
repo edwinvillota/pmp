@@ -24,6 +24,7 @@
     "formidable": "^1.2.1",
     "jsonwebtoken": "^8.3.0",
     "limax": "^1.7.0",
+    "moment": "^2.24.0",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.6",
     "nodemon": "^1.18.5",

@@ -23,4 +23,11 @@ export const GET_USER_BY_ID = 'GET_USER_BY_ID'
 export const ADD_USER = 'ADD_USER'
 export const UPDATE_USER = 'UPDATE_USER'
 export const DELETE_USER = 'DELETE_USER'
+// Balances
+export const GET_ALL_TRANSFORMERS = 'GET_ALL_TRANSFORMERS'
+export const SET_ALL_TRANSFORMERS = 'SET_ALL_TRANSFORMERS'
+export const DELETE_TRANSFORMER = 'DELETE_TRANSFORMER'
 
+// Transform Activities 
+export const SET_ALL_ACTIVITIES = 'SET_ALL_ACTIVITIES'
+export const SET_ALL_USERS = 'SET_ALL_USERS'

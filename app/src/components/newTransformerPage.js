@@ -12,7 +12,10 @@ import {
     FormControl,
     InputLabel,
     Select,
-    OutlinedInput
+    OutlinedInput,
+    FormControlLabel,
+    Switch
+
 } from '@material-ui/core'
 import {
     setFileStatus,
@@ -22,6 +25,8 @@ import axios from 'axios'
 import FilesUploader from './filesUploader'
 import * as XLSX from 'xlsx'
 import PaginationTable from './paginationTable'
+import { CheckBox } from '@material-ui/icons'
+import classnames from 'classnames'
 
 const styles = theme => ({
     root: {
@@ -40,6 +45,14 @@ const styles = theme => ({
     formItem: {
         marginBottom: '1em',
         paddingRight: '1em'
+    },
+    success_button: {
+        backgroundColor: 'green',
+        color: 'white'
+    },
+    error_button: {
+        backgroundColor: 'red',
+        color: 'white'
     }
 })
 
@@ -48,10 +61,9 @@ class NewTransformerPage extends Component {
         super()
         this.state = {
             structure: '',
-            town: 1,
-            macro: '',
+            town: '',
+            address: '',
             kva: '',
-            ratio: '',
             users: [],
             errors: {
                 structure: {
@@ -69,8 +81,18 @@ class NewTransformerPage extends Component {
                 ratio: {
                     status: false,
                     msg: ''
+                },
+                address: {
+                    status: false,
+                    msg: ''
                 }
-            }
+            },
+            haveMacro: true,
+            macro: '',
+            ratio: '',
+            newMacro: 'NO',
+            savedTransformer: false,
+            saveError: false
         }
     }
 
@@ -79,25 +101,37 @@ class NewTransformerPage extends Component {
         const { 
             structure, 
             town,
-            macro,
+            address,
             kva,
+            users,
+            haveMacro,
+            macro,
             ratio,
-            users
+            newMacro
         } = this.state 
         const endpoint = `${this.props.apiUrl}/api/transformers`
 
         axios.post(endpoint, {
             structure: structure, 
             town: town,
-            macro: macro,
+            address: address,
             kva: kva,
+            users: users,
+            haveMacro: haveMacro,
+            macro: macro,
             ratio: ratio,
-            users: users
+            newMacro: newMacro
         })
             .then(json => {
-                console.log(json)
-            }).catch(err => {
-                console.log(err)
+                this.setState({
+                    savedTransformer: true
+                })
+                alert('Transformador registrado correctamente')
+            }).catch(error => {
+                this.setState({
+                    saveError: true
+                })
+                alert('Error al guardar el transformador: ' + error)
             })
     }
 
@@ -109,6 +143,7 @@ class NewTransformerPage extends Component {
             macro,
             kva,
             ratio,
+            haveMacro
         } = this.state
 
         let errors = this.state.errors
@@ -127,7 +162,7 @@ class NewTransformerPage extends Component {
         // Town validations
 
         // Macro validations
-        if (!(typeof macro === 'string') || macro.length !== 7) {
+        if ((!(typeof macro === 'string') || macro.length !== 7) && haveMacro) {
             errors = {
                 ...errors,
                 macro: {
@@ -151,7 +186,7 @@ class NewTransformerPage extends Component {
         }
 
         // Ratio validations
-        if (ratio.trim().length === 0) {
+        if (ratio.trim().length === 0 && haveMacro) {
             errors = {
                 ...errors,
                 ratio: {
@@ -247,6 +282,7 @@ class NewTransformerPage extends Component {
                                             </InputLabel>
                                             <Select
                                                 native
+                                                defaultValue={'PASTO'}
                                                 input={
                                                     <OutlinedInput
                                                         labelWidth={50}
@@ -256,27 +292,27 @@ class NewTransformerPage extends Component {
                                                 value={this.state.town}
                                                 onChange={this.handleChange('town')}
                                             >
-                                                <option value={1}>PASTO</option>
-                                                <option value={2}>TUMACO</option>
-                                                <option value={3}>LA UNION</option>
-                                                <option value={4}>LA CRUZ</option>
-                                                <option value={5}>BELEN</option>
+                                                <option value={'PASTO'}>PASTO</option>
+                                                <option value={'TUMACO'}>TUMACO</option>
+                                                <option value={'LA UNION'}>LA UNION</option>
+                                                <option value={'LA CRUZ'}>LA CRUZ</option>
+                                                <option value={'BELEN'}>BELEN</option>
                                             </Select>
                                         </FormControl>
                                     </Grid>
                                     <Grid item xs={4} className={classes.formItem}>
                                         <TextField 
                                             fullWidth
-                                            type='number'
-                                            id='macromedidor'
-                                            label='Macromedidor'
+                                            id='address'
+                                            label='Dirección'
                                             variant='outlined'
-                                            onChange={this.handleChange('macro')}
-                                            value={this.state.macro}
-                                            error={errors.macro.status}
-                                            helperText={errors.macro.status ? errors.macro.msg : ''}
+                                            onChange={this.handleChange('address')}
+                                            value={this.state.address}
+                                            error={errors.address.status}
+                                            helperText={errors.address.status ? errors.address.msg : ''}
                                             />
                                     </Grid>
+
                                     <Grid item xs={4} className={classes.formItem}>
                                         <TextField
                                             fullWidth
@@ -290,20 +326,89 @@ class NewTransformerPage extends Component {
                                             helperText={errors.kva.status ? errors.kva.msg : ''}
                                             />
                                     </Grid>
-                                    <Grid item xs={4} className={classes.formItem}>
-                                        <TextField
-                                            fullWidth
-                                            type='number'
-                                            id='ratio'
-                                            label='Ratio'
-                                            variant='outlined'
-                                            onChange={this.handleChange('ratio')}
-                                            value={this.state.ratio}
-                                            error={errors.ratio.status}
-                                            helperText={errors.ratio.status ? errors.ratio.msg : ''}
-                                            />
-                                    </Grid>
+
                                 </form>
+                        </Grid>
+                        <Typography variant='h5' component='h3' align='left'>
+                            Información del Macromedidor
+                        </Typography>
+                        <Divider /> <br/>
+                        <Grid item xs={12}>
+                            <form className={classes.form}>
+                                <FormControlLabel
+                                    style={{
+                                        display: 'flex',
+                                        width: '100%',
+                                        justifyContent: 'center'
+                                    }}
+                                    control={
+                                        <Switch checked={this.state.haveMacro} onChange={(event) => {
+                                            this.setState({
+                                                haveMacro: event.target.checked
+                                            })
+                                        }}/>
+                                    }
+                                    label='¿Tiene Macromedidor?'
+                                />
+                                {
+                                    this.state.haveMacro 
+                                    ? (
+                                        <Grid container xs={12} direction='row'>
+                                            <Grid item xs={4} className={classes.formItem}>
+                                                <TextField 
+                                                    fullWidth
+                                                    type='number'
+                                                    id='macromedidor'
+                                                    label='Macromedidor'
+                                                    variant='outlined'
+                                                    onChange={this.handleChange('macro')}
+                                                    value={this.state.macro}
+                                                    error={errors.macro.status}
+                                                    helperText={errors.macro.status ? errors.macro.msg : ''}
+                                                    />
+                                            </Grid>
+                                            <Grid item xs={4} className={classes.formItem}>
+                                                <TextField
+                                                    fullWidth
+                                                    type='number'
+                                                    id='ratio'
+                                                    label='Ratio'
+                                                    variant='outlined'
+                                                    onChange={this.handleChange('ratio')}
+                                                    value={this.state.ratio}
+                                                    error={errors.ratio.status}
+                                                    helperText={errors.ratio.status ? errors.ratio.msg : ''}
+                                                    />
+                                            </Grid>
+                                            <Grid item xs={4} className={classes.formItem}>
+                                            <FormControl variant='outlined' fullWidth>
+                                                <InputLabel
+                                                    style={{backgroundColor: 'white'}}
+                                                    >
+                                                    Macromedidor Nuevo
+                                                </InputLabel>
+                                                <Select
+                                                    defaultValue={'NO'}
+                                                    native
+                                                    input={
+                                                        <OutlinedInput
+                                                            labelWidth={50}
+                                                            name='MacroNuevo'
+                                                        />
+                                                    }
+                                                    value={this.state.newMacro}
+                                                    onChange={this.handleChange('newMacro')}
+                                                >
+                                                    <option value={'SI'}>SI</option>
+                                                    <option value={'NO'}>NO</option>
+                                                </Select>
+                                            </FormControl>
+                                    </Grid>
+                                        </Grid>
+                                    ) 
+                                    : (null)
+                                }
+                            </form>
                         </Grid>
                         <Typography variant='h5' component='h3' align='left'>
                             Usuarios
@@ -329,9 +434,13 @@ class NewTransformerPage extends Component {
                             <Button
                                 variant='outlined'
                                 color='secondary'
+                                className={classnames({
+                                    [classes.success_button]: this.state.savedTransformer,
+                                    [classes.error_button]: this.state.saveError
+                                })}
                                 fullWidth
                                 onClick={this.dataValidator}
-                                disabled={!(this.props.filesLoader.status === 'SUCCESS')}
+                                disabled={(!this.props.filesLoader.status === 'SUCCESS') || this.state.savedTransformer}
                             >
                                 Crear Transformador
                             </Button>

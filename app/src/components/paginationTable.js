@@ -137,21 +137,25 @@ class CustomPaginationActionsTable extends React.Component {
           <Table className={classes.table}>
             <TableHead>
                 <TableRow>
+                    <TableCell>Tipo</TableCell>
                     <TableCell>Medidor</TableCell>
                     <TableCell>Marca</TableCell>
                     <TableCell>Codigo</TableCell>
                     <TableCell>Direccion</TableCell>
+                    <TableCell>Factor</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
               {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => (
                 <TableRow key={i}>
                   <TableCell component="th" scope="row">
-                    {row.medidor}
+                    {row.tipo}
                   </TableCell>
+                  <TableCell>{row.medidor}</TableCell>
                   <TableCell>{row.marca}</TableCell>
                   <TableCell>{row.codigo}</TableCell>
                   <TableCell>{row.direccion}</TableCell>
+                  <TableCell>{row.factor}</TableCell>
                 </TableRow>
               ))}
               {emptyRows > 0 && (

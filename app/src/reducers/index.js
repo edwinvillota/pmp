@@ -6,6 +6,8 @@ import apiReducer from './apiReducer'
 import filesLoaderReducer from './filesLoaderReducer'
 import vtpReducer from './vtpReducer'
 import administrationReducer from './administrationReducer'
+import balancesReducer from './balancesReducer'
+import transformerActivities from './transformerActivitiesReducer'
 
 export default combineReducers({
   errors: errorReducer,
@@ -14,5 +16,7 @@ export default combineReducers({
   api: apiReducer,
   filesLoader: filesLoaderReducer,
   vtp: vtpReducer,
-  administration: administrationReducer
+  administration: administrationReducer,
+  balances: balancesReducer,
+  transformerActivities: transformerActivities
 })
