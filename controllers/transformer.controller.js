@@ -3,6 +3,7 @@ import Transformer from '../models/transformer'
 import TransformerUser from '../models/transformerUser'
 import Macro from '../models/macro'
 import TransformerActivity from '../models/transformerActivity'
+import User from '../models/user'
 
 import Formidable from 'formidable'
 import FileReader from 'filereader'
@@ -173,6 +174,15 @@ TransformerController.getAllTransformerActivities = async (req, res) => {
                             foreignField: '_id',
                             as: 'transformer_info'
                         }
+            },
+            {
+                $lookup:
+                        {
+                            from: 'users',
+                            localField: 'asigned_to',
+                            foreignField: '_id',
+                            as: 'user_info'
+                        }
             }
         ]).exec((err, result) => {
             if (err) {
@@ -221,7 +231,8 @@ TransformerController.delTransformerActivity = async (req, res) => {
 }
 
 TransformerController.assignTransformerActivity = async (req, res) => {
-    const { id, user_id } = req.params
+    const { id } = req.params
+    const { user_id } = req.body
 
     TransformerActivity.findOne({
         '_id': ObjectId(id)
@@ -250,6 +261,49 @@ TransformerController.breakfreeTransformerActivity = async (req, res) => {
                     res.status(200).json(activity)
                 })
         })
+}
+
+TransformerController.getAsignedTransformerActivities = async (req, res) => {
+    if (req.user) {
+        User.findOne({CC: req.user.CC}).exec((err, user) => {
+            if (!err) {
+                TransformerActivity.aggregate([
+                    {
+                        $match: {asigned_to: ObjectId(user._id)}   
+                    },
+                    {
+                        $lookup: 
+                                {
+                                    from: 'transformers',
+                                    localField: 'transformer_id',
+                                    foreignField: '_id',
+                                    as: 'transformer_info'
+                                }
+                    }
+                ]).exec((err, activities) => {
+                    if (!err) {
+                        res.status(200).json(activities)
+                    } else {
+                        res.status(500).json({
+                            status: 'Error',
+                            message: err
+                        })                                    
+                    }
+                })
+
+            } else {
+                res.status(500).json({
+                    status: 'Error',
+                    message: err
+                })                
+            }
+        })
+    } else {
+        res.status(500).json({
+            status: 'Error',
+            message: 'No esta autenticado'
+        })
+    }
 }
 
 export default TransformerController

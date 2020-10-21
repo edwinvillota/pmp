@@ -48,4 +48,8 @@ router.put('/transformer/activity/:id/breakfree', (req, res) => {
     Transformer.breakfreeTransformerActivity(req, res)
 })
 
+router.get('/transformers/activities/asigned', (req, res) => {
+    Transformer.getAsignedTransformerActivities(req, res)
+})
+
 export default router

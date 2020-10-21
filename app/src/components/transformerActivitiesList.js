@@ -245,139 +245,145 @@ class TransformersActivitiesLists extends Component {
         const { classes } = this.props
         const activities = this.props.transformerActivities.activities
 
-        const items = activities.map((activity, i) => (
-            <Grid container spacing={24} key={i} className={classes.activity__mainwrapper}>
-                <Grid container xs={6}>
-                    <Grid item xs={6} className={classes.activity__maininfo}>
-                        <Typography 
-                            variant='h5'
-                            className={classes.maininfo__structure}
+        const items = activities.map((activity, i) => {
+            return (
+                <Grid container spacing={24} key={i} className={classes.activity__mainwrapper}>
+                    <Grid container xs={6}>
+                        <Grid item xs={6} className={classes.activity__maininfo}>
+                            <Typography 
+                                variant='h5'
+                                className={classes.maininfo__structure}
+                                >
+                                {activity.transformer_info[0].structure}
+                            </Typography>
+                            <Typography
+                                variant='body2'
+                                className={classes.maininfo__creationdate}
+                                >
+                                {moment(activity.creation_date).format('YYYY-MM-DD hh:mm a')}
+                            </Typography>
+                            <Typography
+                                variant='body1'
+                                className={classes.maininfo__town}
+                                >
+                                {activity.transformer_info[0].town}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6} className={classes.activity__secinfo}>
+                            <Typography
+                                className={classes.secinfo__propname}
                             >
-                            {activity.transformer_info[0].structure}
-                        </Typography>
-                        <Typography
-                            variant='body2'
-                            className={classes.maininfo__creationdate}
+                                Tipo
+                            </Typography>
+                            <Typography
+                                className={classes.secinfo__propvalue}
                             >
-                            {moment(activity.creation_date).format('YYYY-MM-DD hh:mm a')}
-                        </Typography>
-                        <Typography
-                            variant='body1'
-                            className={classes.maininfo__town}
+                                {activity.type}
+                            </Typography>
+                            <Typography
+                                className={classes.secinfo__propname}
                             >
-                            {activity.transformer_info[0].town}
-                        </Typography>
+                                Estado
+                            </Typography>
+                            <Typography
+                                className={classes.secinfo__propvalue}
+                            >
+                                {activity.status}
+                            </Typography>
+                            <Typography
+                                className={classes.secinfo__propname}
+                            >
+                                Propietario
+                            </Typography>
+                            <Typography
+                                className={classes.secinfo__propvalue}
+                            >
+                                {activity.creator}
+                            </Typography>
+                            <Typography
+                                className={classes.secinfo__propname}
+                            >
+                                Asignado
+                            </Typography>
+                            <Typography
+                                className={classes.secinfo__propvalue}
+                            >
+                                {
+                                    (activity.user_info[0]) ? 
+                                    (`${activity.user_info[0].name} ${activity.user_info[0].lastname}`) :
+                                    ('NO ASIGNADO')
+                                }
+                            </Typography>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6} className={classes.activity__secinfo}>
-                        <Typography
-                            className={classes.secinfo__propname}
-                        >
-                            Tipo
-                        </Typography>
-                        <Typography
-                            className={classes.secinfo__propvalue}
-                        >
-                            {activity.type}
-                        </Typography>
-                        <Typography
-                            className={classes.secinfo__propname}
-                        >
-                            Estado
-                        </Typography>
-                        <Typography
-                            className={classes.secinfo__propvalue}
-                        >
-                            {activity.status}
-                        </Typography>
-                        <Typography
-                            className={classes.secinfo__propname}
-                        >
-                            Propietario
-                        </Typography>
-                        <Typography
-                            className={classes.secinfo__propvalue}
-                        >
-                            {activity.creator}
-                        </Typography>
-                        <Typography
-                            className={classes.secinfo__propname}
-                        >
-                            Asignado
-                        </Typography>
-                        <Typography
-                            className={classes.secinfo__propvalue}
-                        >
-                            {activity.asigned_to || 'NO ASIGNADO'}
-                        </Typography>
-                    </Grid>
-                </Grid>
-                <Grid container xs={6} style={{paddingLeft: '1em'}}>
-                    <Grid container xs={12} className={classes.activity__inputwrap}>
-                        <Grid item xs={3}>
+                    <Grid container xs={6} style={{paddingLeft: '1em'}}>
+                        <Grid container xs={12} className={classes.activity__inputwrap}>
+                            <Grid item xs={3}>
+                                <Button
+                                    variant='contained'
+                                    fullWidth
+                                    className={classes.button__asign_to}
+                                    disabled={!!activity.asigned_to}
+                                    onClick={() => this.handleOpenAsignDialog(activity._id)}
+                                    >
+                                    Asignar
+                                </Button>
+                            </Grid>
+                            <Grid item xs={9} style={{paddingLeft: '1em'}}>
+                                <FormControl variant='outlined' fullWidth disabled={!!activity.asigned_to}>
+                                    <InputLabel
+                                        style={{backgroundColor: 'white'}}
+                                        >
+                                        Usuario
+                                    </InputLabel>
+                                    <Select
+                                        native
+                                        style={{height: '40px'}}
+                                        input={
+                                            <OutlinedInput
+                                                labelWidth={50}
+                                                name='Usuario'
+                                            />
+                                        }
+                                        onChange={this.handleChangeActivityUser(activity._id)}
+                                    >   
+                                        <option value={''}></option>
+                                        {this._renderUsersOptions()}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                        <Grid xs={12} className={classes.activity__buttonwrap}>
                             <Button
                                 variant='contained'
                                 fullWidth
-                                className={classes.button__asign_to}
-                                disabled={!!activity.asigned_to}
-                                onClick={() => this.handleOpenAsignDialog(activity._id)}
+                                className={classes.button__breakfree}
+                                disabled={!activity.asigned_to}
+                                onClick={
+                                    () => {
+                                        this.handleOpenBreakfreeDialog(activity._id)
+                                    }
+                                }
                                 >
-                                Asignar
+                                Liberar
+                            </Button>
+                            <Button
+                                variant='contained'
+                                fullWidth
+                                className={classes.button__delete}
+                                onClick={
+                                    () => {
+                                        this.handleOpenRemoveDialog(activity._id)
+                                    }
+                                }
+                                >
+                                Eliminar
                             </Button>
                         </Grid>
-                        <Grid item xs={9} style={{paddingLeft: '1em'}}>
-                            <FormControl variant='outlined' fullWidth disabled={!!activity.asigned_to}>
-                                <InputLabel
-                                    style={{backgroundColor: 'white'}}
-                                    >
-                                    Usuario
-                                </InputLabel>
-                                <Select
-                                    native
-                                    style={{height: '40px'}}
-                                    input={
-                                        <OutlinedInput
-                                            labelWidth={50}
-                                            name='Usuario'
-                                        />
-                                    }
-                                    onChange={this.handleChangeActivityUser(activity._id)}
-                                >   
-                                    <option value={''}></option>
-                                    {this._renderUsersOptions()}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Grid xs={12} className={classes.activity__buttonwrap}>
-                        <Button
-                            variant='contained'
-                            fullWidth
-                            className={classes.button__breakfree}
-                            disabled={!activity.asigned_to}
-                            onClick={
-                                () => {
-                                    this.handleOpenBreakfreeDialog(activity._id)
-                                }
-                            }
-                            >
-                            Liberar
-                        </Button>
-                        <Button
-                            variant='contained'
-                            fullWidth
-                            className={classes.button__delete}
-                            onClick={
-                                () => {
-                                    this.handleOpenRemoveDialog(activity._id)
-                                }
-                            }
-                            >
-                            Eliminar
-                        </Button>
                     </Grid>
                 </Grid>
-            </Grid>
-        ))
+            )
+        })
 
         return items
     }
@@ -404,7 +410,7 @@ class TransformersActivitiesLists extends Component {
                             OK
                         </Button>
                         <Button color='primary'
-                            onClick={this.handleCloseAsignDialog}
+                            onClick={this.handleCloseRemoveDialog}
                             >
                             CANCELAR
                         </Button>
