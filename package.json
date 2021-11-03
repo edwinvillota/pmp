@@ -31,7 +31,7 @@
     "python-shell": "^1.0.7",
     "sanitize-html": "^1.19.1",
     "socket.io": "^2.2.0",
-    "validator": "^10.8.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {},
   "repository": {
